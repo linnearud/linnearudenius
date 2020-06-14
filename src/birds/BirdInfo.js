@@ -51,6 +51,8 @@ const BirdInfo = () => {
                         textAlign: "left",
                         margin: theme.baseFontSize,
                         width: "400px",
+                        maxWidth: "100%",
+                        margin: `${theme.baseFontSize}px`,
                         ...breakpoints.tablet({
                             textAlign: "center",
                             margin: `${theme.baseFontSize}px auto`,
@@ -64,9 +66,9 @@ const BirdInfo = () => {
                         display: "flex",
                         flexDirection: "column",
                         textAlign: "left",
+                        maxWidth: "100%",
                         paddingLeft: 2 * theme.baseFontSize,
-                        width: 400 - 3 * theme.baseFontSize,
-                        margin: theme.baseFontSize,
+                        margin: `${theme.baseFontSize}px 0`,
                         ...breakpoints.tablet({
                             width: 400,
                             margin: `${theme.baseFontSize}px auto`,
@@ -84,6 +86,8 @@ const BirdInfo = () => {
                         textAlign: "left",
                         margin: theme.baseFontSize,
                         width: "400px",
+                        maxWidth: "100%",
+                        margin: `${theme.baseFontSize}px`,
                         ...breakpoints.tablet({
                             textAlign: "center",
                             margin: `${theme.baseFontSize}px auto`,
