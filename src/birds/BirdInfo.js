@@ -40,13 +40,26 @@ const BirdInfo = () => {
                     paddingTop: theme.baseFontSize,
                 }}
             >
-                <Typography.H1 css={{ marginBottom: 0 }}>
-                    {bird.name_sv}
-                </Typography.H1>
-                <Typography.Body css={{ fontStyle: "italic" }}>
-                    ({bird.name_latin})
-                </Typography.Body>
-                <Typography.H3
+                <div
+                    css={{
+                        width: "400px",
+                        maxWidth: "100%",
+                        paddingLeft: theme.baseFontSize,
+                        margin: "auto",
+                        textAlign: "left",
+                        ...breakpoints.tablet({
+                            textAlign: "center",
+                        }),
+                    }}
+                >
+                    <Typography.H1
+                        css={{ marginBottom: 0.5 * theme.baseFontSize }}
+                    >
+                        {bird.name_sv}
+                    </Typography.H1>
+                    <Typography.Body>({bird.name_latin})</Typography.Body>
+                </div>
+                <Typography.H4
                     css={{
                         textAlign: "left",
                         margin: theme.baseFontSize,
@@ -60,7 +73,7 @@ const BirdInfo = () => {
                     }}
                 >
                     Kännetecken
-                </Typography.H3>
+                </Typography.H4>
                 <ul
                     css={{
                         display: "flex",
@@ -81,7 +94,7 @@ const BirdInfo = () => {
                         </Typography.Body>
                     ))}
                 </ul>
-                <Typography.H3
+                <Typography.H4
                     css={{
                         textAlign: "left",
                         margin: theme.baseFontSize,
@@ -95,7 +108,7 @@ const BirdInfo = () => {
                     }}
                 >
                     Bilder
-                </Typography.H3>
+                </Typography.H4>
                 <div
                     css={{
                         position: "relative",
@@ -112,7 +125,14 @@ const BirdInfo = () => {
                             stroke: theme.colors[constants.COLORS.BLACK].base,
                         }}
                     >
-                        <div onClick={() => setImageIndex(imageIndex - 1)}>
+                        <div
+                            css={{
+                                width: "50px",
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                            onClick={() => setImageIndex(imageIndex - 1)}
+                        >
                             {imageIndex !== 0 && (
                                 <CaretIcon
                                     css={{
@@ -143,7 +163,15 @@ const BirdInfo = () => {
                                 </Typography.Body>
                             ))}
                         </div>
-                        <div onClick={() => setImageIndex(imageIndex + 1)}>
+                        <div
+                            css={{
+                                width: "50px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                            }}
+                            onClick={() => setImageIndex(imageIndex + 1)}
+                        >
                             {imageIndex !== pictures.length - 1 && (
                                 <CaretIcon
                                     css={{

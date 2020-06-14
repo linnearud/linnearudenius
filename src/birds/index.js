@@ -65,7 +65,11 @@ const Navigation = () => {
     };
     return (
         <Fragment>
-            <TopNav.Container>
+            <TopNav.Container menuText={"Meny"}>
+                <TopNav.Item
+                    onClick={() => navigateToPage("/birds/")}
+                    text="Hem"
+                />
                 <TopNav.Item
                     onClick={() => setMenuVisible(!menuVisible)}
                     text="Fåglar"

@@ -25,6 +25,7 @@ export const Container = ({
   onClose,
   persist,
   visible,
+  menuText,
   ...rest
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,8 +36,8 @@ export const Container = ({
       <Portal>
         <div
           css={{
-            position: 'absolute',
-            top: 4*theme.baseFontSize,
+            position: "absolute",
+            top: 4 * theme.baseFontSize,
             height: "100vh",
             width: "100vw",
             backgroundColor: theme.colors[color].base,
@@ -69,7 +70,7 @@ export const Container = ({
 
       <div
         css={{
-          position: 'absolute',
+          position: "absolute",
           top: 0,
           width: "100%",
           height: 4 * theme.baseFontSize,
@@ -106,7 +107,7 @@ export const Container = ({
                   onClick={onClose}
                 />
               ) : (
-                "Menu"
+                menuText || "Menu"
               )}
             </Item>
           </div>
@@ -131,7 +132,14 @@ Container.defaultProps = {
   hoverColor: COLORS.PRIMARY,
 };
 
-export const Item = ({ text, children, onClick, removePadding, active, ...rest }) => {
+export const Item = ({
+  text,
+  children,
+  onClick,
+  removePadding,
+  active,
+  ...rest
+}) => {
   const theme = useContext(MollyThemeContext);
   const topNavCtx = useContext(TopNavContext);
 
