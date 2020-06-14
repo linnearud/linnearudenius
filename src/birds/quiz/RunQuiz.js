@@ -86,7 +86,7 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
         const indexOne = Math.floor(Math.random() * allBirdNames.length);
         const firstAlternative = allBirdNames[indexOne];
         allBirdNames.splice(indexOne, 1);
-        
+
         return [
             firstAlternative,
             allBirdNames[Math.floor(Math.random() * allBirdNames.length)],
@@ -121,7 +121,12 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
 
     if (quizBirds.length > 0) {
         return (
-            <div css={{ marginBottom: 4 * theme.baseFontSize, paddingTop: theme.baseFontSize }}>
+            <div
+                css={{
+                    marginBottom: 4 * theme.baseFontSize,
+                    paddingTop: theme.baseFontSize,
+                }}
+            >
                 <Typography.H1 css={{ textAlign: "center" }}>
                     Quiz
                 </Typography.H1>
@@ -167,6 +172,7 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
                     css={{
                         margin: `${theme.baseFontSize}px auto`,
                         width: "fit-content",
+                        maxWidth: "100%",
                     }}
                 >
                     {openAnswer === "true" ? (
