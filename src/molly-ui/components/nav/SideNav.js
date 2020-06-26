@@ -113,14 +113,7 @@ export const Container = ({
         <SideNavContext.Provider
           value={{ hoverColor: hoverColor, backgroundColor: color }}
         >
-          <div
-            css={{
-              boxShadow: "0 3px 10px rgba(0,0,0,0.20)",
-              height: "100%",
-            }}
-          >
             {children}
-          </div>
         </SideNavContext.Provider>
       </div>
     </Portal>
