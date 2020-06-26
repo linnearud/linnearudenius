@@ -8,7 +8,7 @@ const StartPage = () => {
     return (
         <div
             css={{
-                background: 'url("../birds.jpg") no-repeat center center fixed',
+                background: `url(${require("../images/birds.jpg")}) no-repeat center center fixed`,
                 height: "100%",
                 width: "100%",
                 backgroundSize: "250% 100%",

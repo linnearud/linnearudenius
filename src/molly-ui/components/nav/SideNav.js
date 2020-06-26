@@ -75,9 +75,11 @@ export const Container = ({
           overflowY: "auto",
           overflowX: "hidden",
           ...tablet({
-            ...(hasTopNav && {top: 4*theme.baseFontSize}),
+            ...(hasTopNav && { top: 4 * theme.baseFontSize }),
             width: visible ? "200px" : 0,
-            height: "100vh",
+            height: hasTopNav
+              ? `calc(100vh - ${4 * theme.baseFontSize}px)`
+              : "100vh",
             transition: "width 0.2s",
             boxShadow:
               position == POSITIONS.RIGHT
@@ -99,24 +101,25 @@ export const Container = ({
           }}
         >
           <Item onClick={onClose}>
-              <CaretIcon
-                css={{
-                  width: "12px",
-                  transform: "rotate(90deg)",
-                }}
-                onClick={onClose}
-              />
+            <CaretIcon
+              css={{
+                width: "12px",
+                transform: "rotate(90deg)",
+              }}
+              onClick={onClose}
+            />
           </Item>
         </div>
         <SideNavContext.Provider
           value={{ hoverColor: hoverColor, backgroundColor: color }}
         >
-          <div css={{
-            boxShadow: "0 3px 10px rgba(0,0,0,0.20)",
-            height: '100%',
-          }}
+          <div
+            css={{
+              boxShadow: "0 3px 10px rgba(0,0,0,0.20)",
+              height: "100%",
+            }}
           >
-          {children}
+            {children}
           </div>
         </SideNavContext.Provider>
       </div>
