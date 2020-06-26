@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { birds } from "../birds";
+import { getBirds, getBirdsFromGroup } from "../data/helpers";
 import { Link, useHistory } from "react-router-dom";
 import {
     MollyThemeContext,
@@ -12,7 +12,7 @@ import {
     Button,
 } from "../../molly-ui";
 
-const RunQuiz = ({ group, numBirds, openAnswer }) => {
+const RunQuiz = ({ groupId, numBirds, openAnswer }) => {
     const [quizBirds, setQuizBirds] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState([]);
@@ -25,21 +25,9 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
 
     useEffect(() => {
         const allBirds =
-            Number(group) === -1
-                ? birds.reduce((res, item) => {
-                      const itemBirds = item.birds.map((bird) => ({
-                          ...bird,
-                          groupId: item.groupId,
-                      }));
-                      res = res.concat(itemBirds);
-                      return res;
-                  }, [])
-                : birds
-                      .find((g) => g.groupId === Number(group))
-                      .birds.map((bird) => ({
-                          ...bird,
-                          groupId: Number(group),
-                      }));
+            Number(groupId) === -1
+                ? getBirds()
+                : getBirdsFromGroup(Number(groupId));
 
         const randomBirds = allBirds
             .sort(() => 0.5 - Math.random())
@@ -55,7 +43,7 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
             });
 
         setQuizBirds(randomBirds);
-    }, [group, numBirds]);
+    }, [groupId, numBirds]);
 
     useEffect(() => {
         if (quizBirds.length) {
@@ -73,23 +61,20 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
     };
 
     const getBirdAlternatives = () => {
-        const allBirdNames = birds
-            .find((g) => g.groupId === quizBirds[currentIndex].groupId)
-            .birds.map((bird) => bird.name_sv);
-
-        allBirdNames.splice(
-            allBirdNames.findIndex(
-                (birdName) => birdName === quizBirds[currentIndex].name_sv
+        const allAlternatives = getBirdsFromGroup(quizBirds[currentIndex].group)
+        allAlternatives.splice(
+            allAlternatives.findIndex(
+                (bird) => bird.name_sv === quizBirds[currentIndex].name_sv
             ),
             1
         );
-        const indexOne = Math.floor(Math.random() * allBirdNames.length);
-        const firstAlternative = allBirdNames[indexOne];
-        allBirdNames.splice(indexOne, 1);
+        const indexOne = Math.floor(Math.random() * allAlternatives.length);
+        const firstAlternative = allAlternatives[indexOne];
+        allAlternatives.splice(indexOne, 1);
 
         return [
-            firstAlternative,
-            allBirdNames[Math.floor(Math.random() * allBirdNames.length)],
+            firstAlternative.name_sv,
+            allAlternatives[Math.floor(Math.random() * allAlternatives.length)].name_sv,
             quizBirds[currentIndex].name_sv,
         ].sort(() => 0.5 - Math.random());
     };
@@ -124,7 +109,7 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
             <div
                 css={{
                     marginBottom: 4 * theme.baseFontSize,
-                    paddingTop: theme.baseFontSize,
+                    paddingTop: 3 * theme.baseFontSize,
                     maxWidth: "400px",
                     margin: "auto",
                 }}

@@ -10,7 +10,7 @@ import {
     RadioButtonGroup,
     Button,
 } from "../../molly-ui";
-import { birds } from "../birds";
+import { getGroups, getBirds, getBirdsFromGroup } from "../data/helpers"
 
 const SetupQuiz = () => {
     const [selectedGroupOption, setSelectedGroupOption] = useState(-1);
@@ -19,9 +19,9 @@ const SetupQuiz = () => {
     const theme = useContext(MollyThemeContext);
     const history = useHistory();
 
-    const groupOptions = birds.reduce(
+    const groupOptions = getGroups().reduce(
         (res, item) => {
-            res[item.groupId] = item.group;
+            res[item.id] = item.name_sv;
             return res;
         },
         { [-1]: "Alla grupper" }
@@ -34,24 +34,20 @@ const SetupQuiz = () => {
     const handleStartQuiz = () => {
         history.push({
             pathname: "/birds/quiz/start",
-            search: `?group=${selectedGroupOption}&numBirds=${numBirds}&openAnswer=${useOpenAnswer}`,
+            search: `?groupId=${selectedGroupOption}&numBirds=${numBirds}&openAnswer=${useOpenAnswer}`,
         });
     };
 
     const getMaximumBirds = () => {
         if (selectedGroupOption === -1) {
-            return birds.reduce((res, item) => {
-                res = res + item.birds.length;
-                return res;
-            }, 0);
+            return getBirds().length
         } else {
-            return birds.find((group) => group.groupId === selectedGroupOption)
-                .birds.length;
+            return getBirdsFromGroup(selectedGroupOption).length
         }
     };
 
     return (
-        <div css={{ textAlign: "left", maxWidth: "500px", margin: "auto", paddingTop: theme.baseFontSize }}>
+        <div css={{ textAlign: "left", maxWidth: "500px", margin: "auto", paddingTop: 3 * theme.baseFontSize }}>
             <Typography.H1 css={{ textAlign: "center" }}> Quiz </Typography.H1>
             <Typography.Body css={{ padding: `0 ${theme.baseFontSize}px` }}>
                 Välj grupp

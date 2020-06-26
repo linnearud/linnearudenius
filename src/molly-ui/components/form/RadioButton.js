@@ -28,7 +28,7 @@ const RadioButton = ({ type, label, checked, disabled, onChange, children, ...re
       }}
     >
       <Caption color={COLORS.DARK_GREY}>{label}</Caption>
-      <div css={{ position: 'relative' }}>
+      <label css={{ position: 'relative' }}>
         <input
           css={{
             margin: 0,
@@ -90,15 +90,17 @@ const RadioButton = ({ type, label, checked, disabled, onChange, children, ...re
           <div
             css={{
               padding: `0px ${theme.baseFontSize / 2}px`,
+              cursor: "pointer",
               ...(disabled && {
                 color: formStyle.disabled.color,
+                cursor: "initial",
               }),
             }}
           >
             {children}
           </div>
         </div>
-      </div>
+      </label>
     </div>
   )
 }

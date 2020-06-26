@@ -18,7 +18,7 @@ const QuizResult = () => {
     }
 
     return (
-        <div css={{ margin: 4 * theme.baseFontSize, paddingTop: theme.baseFontSize }}>
+        <div css={{ margin: 4 * theme.baseFontSize, paddingTop: 3 * theme.baseFontSize }}>
             <Typography.H1 css={{ textAlign: "center" }}>
                 Resultat
             </Typography.H1>

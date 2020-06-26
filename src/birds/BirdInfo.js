@@ -2,7 +2,7 @@ import { useEffect, useContext, useState } from "react";
 import { useParams, Redirect } from "react-router-dom";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { birds } from "./birds";
+import { getBirdFromSlug } from "./data/helpers"
 import {
     MollyThemeContext,
     Typography,
@@ -12,15 +12,12 @@ import {
 } from "../molly-ui";
 
 const BirdInfo = () => {
-    const { birdId } = useParams();
+    const { slug } = useParams();
     const theme = useContext(MollyThemeContext);
     const [imageIndex, setImageIndex] = useState(0);
     const [pictures, setPictures] = useState([]);
 
-    const bird = birds
-        .map((group) => group.birds)
-        .flat()
-        .find((bird) => bird.id === birdId);
+    const bird = getBirdFromSlug(slug)
 
     useEffect(() => {
         setImageIndex(0);
@@ -30,14 +27,14 @@ const BirdInfo = () => {
             return tmp;
         });
         setPictures(images);
-    }, [birdId, bird.images]);
+    }, [bird.images]);
 
     if (bird) {
         return (
             <div
                 css={{
                     margin: `0 auto ${theme.baseFontSize * 4}px auto`,
-                    paddingTop: theme.baseFontSize,
+                    paddingTop: 3 * theme.baseFontSize,
                     maxWidth: "400px",
                     textAlign: "left",
                     ...breakpoints.tablet({
@@ -154,11 +151,11 @@ const BirdInfo = () => {
                                     transition: "width 0.5s",
                                     margin: 0,
                                 }}
+                                key={index}
                             >
                                 <img
                                     src={pictures[index].src}
                                     alt={bird.name_latin}
-                                    key={index}
                                     css={{
                                         maxWidth: "100%",
                                         width: "400px",

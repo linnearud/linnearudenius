@@ -2,7 +2,7 @@ import { useState, Fragment } from "react";
 import { TopNav, SideNav } from "../molly-ui";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { birds } from "./birds";
+import { getGroups, getBirdsFromGroup } from "./data/helpers"
 import BirdInfo from "./BirdInfo";
 import BirdQuiz from "./quiz";
 import StartPage from "./StartPage.js";
@@ -39,7 +39,7 @@ const BirdsPage = () => {
                 <Switch>
                     <Route path="/birds/" exact component={StartPage} />
                     <Route path="/birds/quiz" component={BirdQuiz} />
-                    <Route path="/birds/:birdId" component={BirdInfo} />
+                    <Route path="/birds/:slug" component={BirdInfo} />
                 </Switch>
             </div>
         </MollyThemeProvider>
@@ -50,19 +50,22 @@ export default BirdsPage;
 
 const Navigation = () => {
     const [menuVisible, setMenuVisible] = useState(false);
-    const [groupOpen, setGroupOpen] = useState(birds.map((_) => false));
+    const [openGroupId, setOpenGroupId] = useState(null)
     const history = useHistory();
 
-    const toggleGroup = (index) => {
-        const openGroups = groupOpen.slice();
-        openGroups[index] = !openGroups[index];
-        setGroupOpen(openGroups);
+    const toggleGroup = (id) => {
+        if (openGroupId === id) {
+            setOpenGroupId(null)
+        } else {
+            setOpenGroupId(id)
+        }
     };
 
     const navigateToPage = (page) => {
         setMenuVisible(false);
         history.push(page);
     };
+
     return (
         <Fragment>
             <TopNav.Container menuText={"Meny"}>
@@ -84,28 +87,28 @@ const Navigation = () => {
                 onClose={() => setMenuVisible(false)}
                 hasTopNav
             >
-                {birds.map((group, i) => {
-                    return (
-                        <Fragment key={group.group}>
-                            <SideNav.Item
-                                text={group.group}
-                                onClick={() => toggleGroup(i)}
-                                caretDirection={groupOpen[i] ? "up" : "down"}
-                            />
-                            {groupOpen[i] &&
-                                group.birds.map((bird) => (
-                                    <SideNav.Item
-                                        level={2}
-                                        text={bird.name_sv}
-                                        key={bird.id}
-                                        onClick={() =>
-                                            navigateToPage(`/birds/${bird.id}`)
-                                        }
-                                    />
-                                ))}
-                        </Fragment>
-                    );
-                })}
+                {getGroups().map(group => (
+                    <Fragment key={group.id}>
+                        <SideNav.Item
+                            text={group.name_sv}
+                            onClick={() => toggleGroup(group.id)}
+                            caretDirection={openGroupId === group.id ? "up" : "down"}
+                        />
+                        {openGroupId === group.id &&
+                            getBirdsFromGroup(group.id).map(bird => (
+                                <SideNav.Item
+                                    level={2}
+                                    text={bird.name_sv}
+                                    key={bird.id}
+                                    onClick={() => navigateToPage(`/birds/${bird.slug}`)}
+                                />
+                            ))
+
+                        }
+                    </Fragment>
+                ))
+
+                }
             </SideNav.Container>
         </Fragment>
     );
