@@ -20,33 +20,27 @@ const StartPage = () => {
     return (
         <div
             css={{
-                backgroundColor: theme.colors[constants.COLORS.PRIMARY].base,
-                height: "100vh",
-                width: "100vw",
-                display: "flex",
-                flexWrap: "wrap",
+                background: 'url("../birds.jpg") no-repeat center center fixed',
+                height: "100%",
+                width: "100%",
+                backgroundSize: "250% 100%",
+                "-webkit-background-size": "250% 100%",
+                "-moz-background-size": "250% 100%",
+                "-o-background-size": "250% 100%",
+                ...breakpoints.tablet({
+                    backgroundSize: "200% 100%",
+                    "-webkit-background-size": "200% 100%",
+                    "-moz-background-size": "200% 100%",
+                    "-o-background-size": "200% 100%",
+                }),
+                ...breakpoints.desktop({
+                    backgroundSize: "cover",
+                    "-webkit-background-size": "cover",
+                    "-moz-background-size": "cover",
+                    "-o-background-size": "cover",
+                }),
             }}
-        >
-            {images.map((image, i) => (
-                <div
-                    key={i}
-                    css={{
-                        backgroundImage: `url(${image})`,
-                        backgroundSize: "100% auto",
-                        height: "15%",
-                        width: "50%",
-                        ...breakpoints.tablet({
-                            height: "15%",
-                            width: "25%",
-                        }),
-                        ...breakpoints.desktop({
-                            height: "20%",
-                            width: "20%",
-                        }),
-                    }}
-                ></div>
-            ))}
-        </div>
+        ></div>
     );
 };
 

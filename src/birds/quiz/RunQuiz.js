@@ -125,6 +125,8 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
                 css={{
                     marginBottom: 4 * theme.baseFontSize,
                     paddingTop: theme.baseFontSize,
+                    maxWidth: "400px",
+                    margin: "auto",
                 }}
             >
                 <Typography.H1 css={{ textAlign: "center" }}>
@@ -132,9 +134,6 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
                 </Typography.H1>
                 <div
                     css={{
-                        width: "400px",
-                        maxWidth: "100%",
-                        margin: "auto",
                         marginBottom: theme.baseFontSize,
                         display: "flex",
                         justifyContent: "center",
@@ -172,14 +171,12 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
                     css={{
                         margin: `${theme.baseFontSize}px auto`,
                         width: "fit-content",
-                        maxWidth: "100%",
                     }}
                 >
                     {openAnswer === "true" ? (
                         <div
                             css={{
-                                width: "400px",
-                                maxWidth: "100%",
+                                maxWidth: "400px",
                                 margin: "auto",
                             }}
                         >
@@ -203,9 +200,7 @@ const RunQuiz = ({ group, numBirds, openAnswer }) => {
                 </div>
                 <div
                     css={{
-                        width: "400px",
                         textAlign: "center",
-                        maxWidth: "100%",
                         margin: `${theme.baseFontSize}px auto`,
                     }}
                 >

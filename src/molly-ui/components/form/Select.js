@@ -36,18 +36,18 @@ export const Select = ({
   const handleClick = (e) => {
     if (node.current.contains(e.target)) {
       return;
-    } else if ( menuOpen ) {
-      setMenuOpen(false)
+    } else if (menuOpen) {
+      setMenuOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClick)
+    document.addEventListener("mousedown", handleClick);
 
     return () => {
-      document.removeEventListener("mousedown", handleClick)
-    }
-  })
+      document.removeEventListener("mousedown", handleClick);
+    };
+  });
 
   return (
     <div
@@ -75,7 +75,7 @@ export const Select = ({
             position: "absolute",
             top: 0,
             left: 0,
-            padding: 0,
+            padding: "2px",
             "&:hover": {
               ...(!disabled && {
                 cursor: "pointer",

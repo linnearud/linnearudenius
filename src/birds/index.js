@@ -35,7 +35,7 @@ const BirdsPage = () => {
     return (
         <MollyThemeProvider theme={birdTheme}>
             <Navigation />
-            <div css={{ marginTop: 4 * birdTheme.baseFontSize }}>
+            <div css={{ width: '100vw', height: "100vh"}}>
                 <Switch>
                     <Route path="/birds/" exact component={StartPage} />
                     <Route path="/birds/quiz" component={BirdQuiz} />

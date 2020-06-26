@@ -36,87 +36,41 @@ const BirdInfo = () => {
         return (
             <div
                 css={{
-                    marginBottom: theme.baseFontSize * 4,
+                    margin: `0 auto ${theme.baseFontSize * 4}px auto`,
                     paddingTop: theme.baseFontSize,
+                    maxWidth: "400px",
+                    textAlign: "left",
+                    ...breakpoints.tablet({
+                        textAlign: "center",
+                    }),
                 }}
             >
-                <div
-                    css={{
-                        width: "400px",
-                        maxWidth: "100%",
-                        paddingLeft: theme.baseFontSize,
-                        margin: "auto",
-                        textAlign: "left",
-                        ...breakpoints.tablet({
-                            textAlign: "center",
-                        }),
-                    }}
-                >
+                <div css={{ paddingLeft: theme.baseFontSize }}>
                     <Typography.H1
                         css={{ marginBottom: 0.5 * theme.baseFontSize }}
                     >
                         {bird.name_sv}
                     </Typography.H1>
                     <Typography.Body>({bird.name_latin})</Typography.Body>
+
+                    <Typography.H4>Kännetecken</Typography.H4>
+                    <ul
+                        css={{
+                            display: "flex",
+                            flexDirection: "column",
+                            paddingLeft: theme.baseFontSize,
+                            textAlign: "left",
+                        }}
+                    >
+                        {bird.characteristics.map((ch, i) => (
+                            <Typography.Body component="li" key={i}>
+                                {ch}
+                            </Typography.Body>
+                        ))}
+                    </ul>
+                    <Typography.H4>Bilder</Typography.H4>
                 </div>
-                <Typography.H4
-                    css={{
-                        textAlign: "left",
-                        margin: theme.baseFontSize,
-                        width: "400px",
-                        maxWidth: "100%",
-                        margin: `${theme.baseFontSize}px`,
-                        ...breakpoints.tablet({
-                            textAlign: "center",
-                            margin: `${theme.baseFontSize}px auto`,
-                        }),
-                    }}
-                >
-                    Kännetecken
-                </Typography.H4>
-                <ul
-                    css={{
-                        display: "flex",
-                        flexDirection: "column",
-                        textAlign: "left",
-                        maxWidth: "100%",
-                        paddingLeft: 2 * theme.baseFontSize,
-                        margin: `${theme.baseFontSize}px 0`,
-                        ...breakpoints.tablet({
-                            width: 400,
-                            margin: `${theme.baseFontSize}px auto`,
-                        }),
-                    }}
-                >
-                    {bird.characteristics.map((ch, i) => (
-                        <Typography.Body component="li" key={i}>
-                            {ch}
-                        </Typography.Body>
-                    ))}
-                </ul>
-                <Typography.H4
-                    css={{
-                        textAlign: "left",
-                        margin: theme.baseFontSize,
-                        width: "400px",
-                        maxWidth: "100%",
-                        margin: `${theme.baseFontSize}px`,
-                        ...breakpoints.tablet({
-                            textAlign: "center",
-                            margin: `${theme.baseFontSize}px auto`,
-                        }),
-                    }}
-                >
-                    Bilder
-                </Typography.H4>
-                <div
-                    css={{
-                        position: "relative",
-                        maxWidth: "100%",
-                        width: "fit-content",
-                        margin: "auto",
-                    }}
-                >
+                <div>
                     <div
                         css={{
                             display: "flex",
@@ -131,7 +85,9 @@ const BirdInfo = () => {
                                 display: "flex",
                                 alignItems: "center",
                             }}
-                            onClick={() => setImageIndex(imageIndex - 1)}
+                            onClick={() =>
+                                imageIndex != 0 && setImageIndex(imageIndex - 1)
+                            }
                         >
                             {imageIndex !== 0 && (
                                 <CaretIcon
@@ -170,7 +126,10 @@ const BirdInfo = () => {
                                 alignItems: "center",
                                 justifyContent: "flex-end",
                             }}
-                            onClick={() => setImageIndex(imageIndex + 1)}
+                            onClick={() =>
+                                imageIndex != pictures.length - 1 &&
+                                setImageIndex(imageIndex + 1)
+                            }
                         >
                             {imageIndex !== pictures.length - 1 && (
                                 <CaretIcon
@@ -199,6 +158,7 @@ const BirdInfo = () => {
                                 <img
                                     src={pictures[index].src}
                                     alt={bird.name_latin}
+                                    key={index}
                                     css={{
                                         maxWidth: "100%",
                                         width: "400px",

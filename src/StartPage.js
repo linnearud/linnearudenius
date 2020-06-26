@@ -3,7 +3,7 @@ import { jsx } from "@emotion/core";
 
 const StartPage = () => (
     <div css={{
-        background: 'url("no_way_through.png") no-repeat center center fixed',
+        background: 'url("no_way_through.jpg") no-repeat center center fixed',
         '-webkit-background-size': 'cover',
         '-moz-background-size': 'cover',
         '-o-background-size': 'cover',
