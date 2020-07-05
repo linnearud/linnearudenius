@@ -25,6 +25,6 @@ export const SIZES = {
 }
 
 export const BREAKPOINTS = {
-  TABLET: '500px',
-  DESKTOP: '1000px'
+  TABLET: 500,
+  DESKTOP: 1000,
 }

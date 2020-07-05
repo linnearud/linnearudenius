@@ -5,7 +5,7 @@ import { jsx } from "@emotion/core";
 import { Portal } from "react-portal";
 
 import MollyThemeContext from "../../contexts/MollyThemeContext";
-import { TYPES, COLORS } from "../../helpers/constants";
+import { TYPES, COLORS, BREAKPOINTS } from "../../helpers/constants";
 import CloseIcon from "../../icons/CloseIcon";
 import CaretIcon from "../../icons/CaretIcon";
 import { getBaseStyle } from "../../helpers/styles";
@@ -54,6 +54,12 @@ export const Container = ({
       }
     };
   }, [persist, visible]);
+
+  useEffect(() => {
+      if (document.body.clientWidth < BREAKPOINTS.TABLET) {
+        document.body.style.overflow = visible ? 'hidden' : 'unset'
+      }
+  }, [visible])
 
   return (
     <Portal>

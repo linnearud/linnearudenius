@@ -5,7 +5,7 @@ import { jsx } from "@emotion/core";
 import { Portal } from "react-portal";
 
 import MollyThemeContext from "../../contexts/MollyThemeContext";
-import { TYPES, COLORS } from "../../helpers/constants";
+import { TYPES, COLORS, BREAKPOINTS } from "../../helpers/constants";
 import { tablet, desktop } from "../../helpers/breakpoints";
 import { getForeground } from "../../helpers/colors";
 import { getBaseStyle } from "../../helpers/styles";
@@ -30,6 +30,12 @@ export const Container = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const theme = useContext(MollyThemeContext);
+
+  useEffect(() => {
+      if (document.body.clientWidth < BREAKPOINTS.TABLET) {
+        document.body.style.overflow = isMenuOpen ? 'hidden' : 'unset'
+      }
+  }, [isMenuOpen])
 
   return (
     <div>
