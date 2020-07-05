@@ -38,21 +38,6 @@ const StartPage = () => (
                 linkedIn{" "}
             </a>
         </div>
-        <div
-            css={{
-                position: "absolute",
-                bottom: 5,
-                right: 5,
-                color: "#eabe53",
-                fontFamily: "Indie Flower, cursive",
-                padding: "0 10px",
-                backgroundColor: "#22291f",
-            }}
-        >
-            <a href="/birds" css={{ color: "#eabe53" }}>
-                Birds
-            </a>
-        </div>
     </div>
 );
 
