@@ -36,7 +36,7 @@ export const Container = ({
       <Portal>
         <div
           css={{
-            position: "absolute",
+            position: "fixed",
             top: 4 * theme.baseFontSize,
             height: "100vh",
             width: "100vw",
@@ -70,7 +70,7 @@ export const Container = ({
 
       <div
         css={{
-          position: "absolute",
+          position: "fixed",
           top: 0,
           width: "100%",
           height: 4 * theme.baseFontSize,

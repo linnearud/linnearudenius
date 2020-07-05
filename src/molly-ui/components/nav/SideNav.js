@@ -61,7 +61,7 @@ export const Container = ({
         ref={node}
         css={{
           ...getBaseStyle(theme),
-          position: "absolute",
+          position: "fixed",
           top: 0,
           backgroundColor: theme.colors[color].base,
           color: theme.colors[color].foreground,
