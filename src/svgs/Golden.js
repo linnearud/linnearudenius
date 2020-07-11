@@ -106,10 +106,10 @@ const Golden = props => (
 
 //Arc 3
 <path d="M3.5524 568C3.55244 812.146 192.406 908 343.552 908" stroke="#4F5D2F" stroke-width="5" strokeDasharray="600">
-      <animate attributeName="stroke-dashoffset" from="-600" to="0" dur={ANIMATION_TIME_1} id="arc3"/>
+      <animate attributeName="stroke-dashoffset" from="600" to="0" dur={ANIMATION_TIME_1} id="arc3"/>
 </path>
 <path d="M7.1984 567.354C7.19843 811.5 196.052 907.354 347.198 907.354" stroke="#8FA998" strokeDasharray="600">
-      <animate attributeName="stroke-dashoffset" from="-600" to="0" dur={ANIMATION_TIME_1}/>
+      <animate attributeName="stroke-dashoffset" from="600" to="0" dur={ANIMATION_TIME_1}/>
 </path>
 <ellipse cx="1219.05" cy="297.5" rx="4.5" ry="5.5" fill="#4F5D2F"/>
 <circle r="5.5" transform="matrix(-1 0 0 1 1299.05 404.5)" fill="#4F5D2F"/>
