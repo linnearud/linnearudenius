@@ -26,6 +26,7 @@ export const H1 = ({ color, children, ...rest }) => {
         lineHeight: `${theme.lineHeights.h1}px`,
         fontWeight: theme.fontWeights.h1,
         color: theme.colors[color].base,
+        margin: theme.baseFontSize,
       }}
       {...rest}
     >
@@ -47,6 +48,7 @@ export const H2 = ({ color, children, ...rest }) => {
         lineHeight: `${theme.lineHeights.h2}px`,
         fontWeight: theme.fontWeights.h2,
         color: theme.colors[color].base,
+        margin: theme.baseFontSize,
       }}
       {...rest}
     >
@@ -68,6 +70,7 @@ export const H3 = ({ color, children, ...rest }) => {
         lineHeight: `${theme.lineHeights.h3}px`,
         fontWeight: theme.fontWeights.h3,
         color: theme.colors[color].base,
+        margin: theme.baseFontSize,
       }}
       {...rest}
     >
@@ -89,6 +92,7 @@ export const H4 = ({ color, children, ...rest }) => {
         lineHeight: `${theme.lineHeights.h4}px`,
         fontWeight: theme.fontWeights.h4,
         color: theme.colors[color].base,
+        margin: theme.baseFontSize * 0.5,
       }}
       {...rest}
     >
@@ -110,6 +114,7 @@ export const H5 = ({ color, children, ...rest }) => {
         lineHeight: `${theme.lineHeights.h5}px`,
         fontWeight: theme.fontWeights.h5,
         color: theme.colors[color].base,
+        margin: theme.baseFontSize * 0.5,
       }}
       {...rest}
     >

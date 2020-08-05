@@ -16,7 +16,6 @@ const Button = ({ type, onClick, children, ...rest }) => {
       css={{
         ...getBaseStyle(theme),
         borderRadius: theme.borderRadius,
-        margin: theme.componentMargin,
         padding: '10px 20px',
         ...buttonStyle.base,
         '&:hover': {

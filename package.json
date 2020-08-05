@@ -7,7 +7,9 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "awesome-debounce-promise": "^2.1.0",
     "emotion": "^10.0.14",
+    "flexsearch": "^0.6.32",
     "onchange": "^6.0.0",
     "prettier": "^1.18.2",
     "query-string": "^6.13.1",
@@ -15,7 +17,8 @@
     "react-dom": "^16.13.1",
     "react-portal": "^4.2.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "use-constant": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

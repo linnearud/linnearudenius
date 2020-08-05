@@ -153,7 +153,7 @@ export const createFullTheme = theme => ({
       boxShadow: '-1px 1px 1px 0 rgba(0,0,0,0.20)',
     },
     raised: {
-      boxShadow: '-1px 1px 2px 0 rgba(0,0,0,0.20)',
+      boxShadow: '0px 1px 1px 0 rgba(0,0,0,0.20)',
     },
     raisedHigh: {
       boxShadow: '-2px 2px 2px 0 rgba(0,0,0,0.20)'

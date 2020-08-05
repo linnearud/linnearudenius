@@ -26,6 +26,7 @@ export const Container = ({
   persist,
   visible,
   menuText,
+  maxWidth,
   ...rest
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -82,11 +83,12 @@ export const Container = ({
           height: 4 * theme.baseFontSize,
           backgroundColor: theme.colors[color].base,
           color: theme.colors[color].foreground,
-          boxShadow: "0 3px 10px rgba(0,0,0,0.60)",
+          boxShadow: "0 1px 5px rgba(0,0,0,0.60)",
           display: "flex",
           justifyContent: "flex-end",
+          zIndex: 2,
           ...tablet({
-            justifyContent: "flex-start",
+            justifyContent: "center",
           }),
         }}
       >
@@ -122,6 +124,8 @@ export const Container = ({
               display: "none",
               ...tablet({
                 display: "flex",
+                width: '100%',
+                maxWidth: maxWidth,
               }),
             }}
           >

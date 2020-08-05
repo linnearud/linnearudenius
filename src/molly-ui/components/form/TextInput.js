@@ -55,7 +55,7 @@ export const TextInput = ({
           ...(error !== '' && formStyle.error ),
           ...(valid && formStyle.success ),
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'baseline',
           borderRadius: theme.borderRadius,
           '&:hover': !disabled && formStyle.hover,
         }}

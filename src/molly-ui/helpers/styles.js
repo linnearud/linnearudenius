@@ -4,7 +4,7 @@ export const getBaseStyle = theme => ({
   fontFamily: theme.fontFamily,
   fontSize: `${theme.baseFontSize}px`,
   lineHeight: `${theme.baseFontSize * theme.lineHeightRatio}px`,
-  color: theme.colors[COLORS.BLACK].base,
+  color: 'currentColor',
 })
 
 export const getColorStyle = (theme, color) => ({})
@@ -14,6 +14,7 @@ export const getFormStyle = theme => {
     base: {
       backgroundColor: theme.colors[COLORS.WHITE].base,
       color: theme.colors[COLORS.BLACK].base,
+      border: `1px solid ${theme.colors[COLORS.LIGHT_GREY].base}`,
       borderBottom: `1px solid ${theme.colors[COLORS.DARK_GREY].base}`,
     },
     hover: {

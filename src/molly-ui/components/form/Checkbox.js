@@ -13,7 +13,7 @@ import {
 } from '../../helpers/styles'
 import { draw } from '../../helpers/keyframes'
 
-const Checkbox = ({ type, label, checked, disabled, onChange, children, ...rest }) => {
+export const Checkbox = ({ type, label, checked, disabled, onChange, children, ...rest }) => {
   const [hasFocus, setHasFocus] = useState(false)
   const [hover, setHover] = useState(false)
 
@@ -25,20 +25,19 @@ const Checkbox = ({ type, label, checked, disabled, onChange, children, ...rest 
       css={{
         display: 'flex',
         flexDirection: 'column',
-        margin: theme.componentMargin,
         ...getBaseStyle(theme),
       }}
     >
       <Caption color={COLORS.DARK_GREY}>{label}</Caption>
-      <div css={{ position: 'relative' }}>
+      <div css={{ position: 'relative'}}>
         <input
           css={{
             margin: 0,
-            width: theme.baseFontSize + 3,
-            height: theme.baseFontSize + 3,
+            width: theme.baseFontSize,
+            height: theme.baseFontSize,
             opacity: 0,
             position: 'absolute',
-            top: (theme.lineHeights.body.base - theme.baseFontSize - 3) / 2,
+            top: 0,
             left: 0,
             cursor: 'pointer',
             '&:disabled': {
@@ -58,8 +57,8 @@ const Checkbox = ({ type, label, checked, disabled, onChange, children, ...rest 
         <div
           css={{
             display: 'flex',
-            height: theme.lineHeights.p,
             alignItems: 'center',
+            width: theme.baseFontSize, height: theme.baseFontSize 
           }}
         >
           <div
@@ -80,13 +79,15 @@ const Checkbox = ({ type, label, checked, disabled, onChange, children, ...rest 
                 css={{
                   strokeDasharray: 100,
                   strokeDashoffset: 100,
-                  animation: `${draw} 2s linear forwards`,
+                  animation: `${draw} 1s linear forwards`,
+                  width: theme.baseFontSize,
+                  height: theme.baseFontSize,
                 }}
                 color={theme.colors[type].foreground}
               />
             )}
           </div>
-          <div
+          {children && <div
             css={{
               padding: `0px ${theme.baseFontSize / 2}px`,
               ...(disabled && {
@@ -96,6 +97,7 @@ const Checkbox = ({ type, label, checked, disabled, onChange, children, ...rest 
           >
             {children}
           </div>
+        }
         </div>
       </div>
     </div>
