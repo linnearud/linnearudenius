@@ -29,7 +29,7 @@ import {
 } from "../data/helpers";
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
-import Loader from "../components/Loader"
+import Loader from "../components/Loader";
 
 export const QuizPage = () => {
     const theme = useContext(MollyThemeContext);
@@ -463,7 +463,7 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
     const [inputValid, setInputValid] = useState(false);
     const [inputError, setInputError] = useState(false);
     const [showDrawer, setShowDrawer] = useState(false);
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(true);
     const theme = useContext(MollyThemeContext);
 
     useEffect(() => {
@@ -474,8 +474,8 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
                     Math.floor(Math.random() * birds[i].images.length)
                 ];
             if (i === 0) {
-                image.onload = () => setIsLoading(false)
-            } 
+                image.onload = () => setIsLoading(false);
+            }
             image.src = randomImageSrc;
             return image;
         });
@@ -491,34 +491,40 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
     }, [currentIndex]);
 
     const getBirdAlternatives = () => {
-        const currentBird = birds[currentIndex]
-        const allBirds = ALL_BIRDS.map(bird => ({
+        const currentBird = birds[currentIndex];
+        const allBirds = ALL_BIRDS.map((bird) => ({
             id: bird.id,
             name_sv: bird.name_sv,
-            prio: 
-                bird.genus.id === currentBird.genus.id ? 1 :
-                bird.family.id === currentBird.family.id ? 2 :
-                bird.order.id === currentBird.order.id ? 3 : 4
-        })).filter(bird => bird.id !== currentBird.id)
-        
-        let alternatives = []
-        let currentPrio = 0
+            prio:
+                bird.genus.id === currentBird.genus.id
+                    ? 1
+                    : bird.family.id === currentBird.family.id
+                    ? 2
+                    : bird.order.id === currentBird.order.id
+                    ? 3
+                    : 4,
+        })).filter((bird) => bird.id !== currentBird.id);
+
+        let alternatives = [];
+        let currentPrio = 0;
         while (alternatives.length < 2) {
-            const currentAlternatives = allBirds.filter(bird => bird.prio === currentPrio)
+            const currentAlternatives = allBirds.filter(
+                (bird) => bird.prio === currentPrio
+            );
             if (alternatives.length === 0) {
                 if (currentAlternatives.length > 1) {
-                    alternatives = getRandom(currentAlternatives, 2)
+                    alternatives = getRandom(currentAlternatives, 2);
                 } else if (currentAlternatives.length === 1) {
-                    alternatives.push(currentAlternatives[0])
+                    alternatives.push(currentAlternatives[0]);
                 }
             } else if (alternatives.length === 1) {
                 if (currentAlternatives.length > 0) {
-                    alternatives.push(getRandom(currentAlternatives, 1))
+                    alternatives.push(getRandom(currentAlternatives, 1));
                 } else if (currentAlternatives.length === 1) {
-                    alternatives.push(currentAlternatives[0])
+                    alternatives.push(currentAlternatives[0]);
                 }
             }
-            currentPrio += 1
+            currentPrio += 1;
         }
 
         return [
@@ -567,9 +573,7 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
                 bird={showDrawer ? birds[currentIndex] : {}}
                 onClose={() => setShowDrawer(false)}
             />
-            {isLoading && (
-                <Loader />
-            )}
+            {isLoading && <Loader />}
             {images.length > 0 && !isLoading && (
                 <div>
                     <div
@@ -578,6 +582,7 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
                             flexWrap: "wrap",
                             justifyContent: "center",
                             marginBottom: theme.baseFontSize,
+                            marginTop: theme.baseFontSize,
                         }}
                     >
                         {birds.map((_, i) => (
@@ -609,9 +614,9 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
                     <div
                         css={{
                             marginBottom: theme.baseFontSize,
-                            width: '100%',
-                            maxWidth: '400px',
-                            margin: 'auto'
+                            width: "100%",
+                            maxWidth: "400px",
+                            margin: "auto",
                         }}
                     >
                         {openAnswer ? (
@@ -625,16 +630,16 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
                                 />
                             </div>
                         ) : (
-                            <div css={{margin: 'auto', width: 'fit-content'}}>
-                            <RadioButtonGroup
-                                options={currentAlternatives}
-                                name="bird-alternatives"
-                                value={currentInput}
-                                onChange={(e) =>
-                                    setCurrentInput(e.target.value)
-                                }
-                                disabled={inputError || inputValid}
-                            />
+                            <div css={{ margin: "auto", width: "fit-content" }}>
+                                <RadioButtonGroup
+                                    options={currentAlternatives}
+                                    name="bird-alternatives"
+                                    value={currentInput}
+                                    onChange={(e) =>
+                                        setCurrentInput(e.target.value)
+                                    }
+                                    disabled={inputError || inputValid}
+                                />
                             </div>
                         )}
                     </div>
