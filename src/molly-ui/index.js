@@ -18,6 +18,5 @@ export { Checkbox } from "./components/form/Checkbox"
 export { RadioButtonGroup } from "./components/form/RadioButtonGroup";
 export { TextInput } from "./components/form/TextInput";
 export { Button } from './components/button/Button'
-export { Card } from './components/Card'
 export { ImageLoader } from './components/ImageLoader'
 //export { Spinner } from './Spinner';
