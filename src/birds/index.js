@@ -16,22 +16,10 @@ import {
 import {
     MollyThemeProvider,
     MollyThemeContext,
-    Button,
-    Typography,
     breakpoints,
     constants,
-    CloseIcon,
-    CaretIcon,
     Tabs,
 } from "../molly-ui";
-import {
-    ORDERS,
-    GENERA,
-    ALL_BIRDS,
-    getGeneraIdsBySubfamily,
-    getGeneraIdsByFamily,
-    getBirdsByGeneraId,
-} from "./data/helpers";
 
 const birdTheme = {
     colors: {
@@ -117,6 +105,7 @@ const Birds = () => {
                         <div
                             css={{
                                 background: `url(${require("../images/forest.jpg")}) no-repeat center center fixed`,
+                                backgroundSize: "cover",
                                 "-webkit-background-size": "cover",
                                 "-moz-background-size": "cover",
                                 "-o-background-size": "cover",

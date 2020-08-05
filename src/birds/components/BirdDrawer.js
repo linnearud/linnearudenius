@@ -123,6 +123,7 @@ const BirdDrawer = ({ bird, onClose }) => {
                                         css={{
                                             width: "calc(100% - 32px)",
                                             maxWidth: 350,
+                                            height: 'auto',
                                             margin: theme.baseFontSize,
                                         }}
                                     />
