@@ -2,7 +2,7 @@ import { useState, Fragment, useContext, useEffect } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import { SearchIndexContext } from "../search/SearchIndexContext";
-import Loader from "../components/Loader"
+import Loader from "../components/Loader";
 import useConstant from "use-constant";
 import AwesomeDebouncePromise from "awesome-debounce-promise";
 
@@ -18,13 +18,13 @@ import {
 } from "../../molly-ui";
 import { ALL_BIRDS, distinct } from "../data/helpers";
 import BirdListing from "../components/BirdListing";
-import BirdDrawer from '../components/BirdDrawer'
+import BirdDrawer from "../components/BirdDrawer";
 
 export const SearchPage = () => {
     const [inputValue, setInputValue] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedBird, setSelectedBird] = useState({})
+    const [selectedBird, setSelectedBird] = useState({});
     const theme = useContext(MollyThemeContext);
     const index = useContext(SearchIndexContext);
 
@@ -34,10 +34,9 @@ export const SearchPage = () => {
             debouncedSearchFunction(inputValue);
         } else {
             setSearchResults([]);
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }, [inputValue]);
-
 
     const search = (searchInput) => {
         let loadedImages = 0;
@@ -49,7 +48,7 @@ export const SearchPage = () => {
             return ALL_BIRDS.find((bird) => bird.id === res);
         });
 
-        setIsLoading(false)
+        setIsLoading(false);
         setSearchResults(results);
     };
 
@@ -68,15 +67,17 @@ export const SearchPage = () => {
             <TextInput
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={"Vilken fågel letar du efter?"}
-                                onClearInput={() => setInputValue('')}
+                label={"Vilken fågel letar du efter?"}
+                onClearInput={() => setInputValue("")}
             />
-            <BirdDrawer bird={selectedBird} onClose={() => setSelectedBird({})} />
-            {isLoading && (
-                <Loader color={theme.colors.primary.base}/>
-            )}
-            {searchResults.length > 0 && !isLoading && searchResults
-                .map((bird) => {
+            <BirdDrawer
+                bird={selectedBird}
+                onClose={() => setSelectedBird({})}
+            />
+            {isLoading && <Loader color={theme.colors.primary.base} />}
+            {searchResults.length > 0 &&
+                !isLoading &&
+                searchResults.map((bird) => {
                     if (bird) {
                         return (
                             <BirdListing
@@ -87,9 +88,13 @@ export const SearchPage = () => {
                                 onClick={() => setSelectedBird(bird)}
                                 hasBorder
                             />
-                        );}
+                        );
+                    }
                 })}
-            {!isLoading && searchResults.length === 0 && inputValue && "Inga resultat"}
+            {!isLoading &&
+                searchResults.length === 0 &&
+                inputValue &&
+                "Inga resultat"}
         </div>
     );
 };
