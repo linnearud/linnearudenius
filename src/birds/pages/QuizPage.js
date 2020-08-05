@@ -572,9 +572,6 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
             )}
             {images.length > 0 && !isLoading && (
                 <div>
-                    <Typography.H4 css={{ marginBottom: theme.baseFontSize }}>
-                        Quiz
-                    </Typography.H4>
                     <div
                         css={{
                             display: "flex",
