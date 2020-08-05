@@ -113,7 +113,7 @@ const BirdDrawer = ({ bird, onClose }) => {
                                 </a>
                             </Typography.Body>
                         )}
-                        <div css={{ marginTop: theme.baseFontSize, display: 'flex', flexWrap: 'wrap'}}>
+                        <div css={{ marginTop: theme.baseFontSize, ...breakpoints.tablet({display: 'flex', flexWrap: 'wrap'})}}>
                             {bird.images.map((image) => {
                                 return (
                                     <img
@@ -122,8 +122,8 @@ const BirdDrawer = ({ bird, onClose }) => {
                                         alt={bird.name_latin}
                                         css={{
                                             width: "calc(100% - 32px)",
-                                            maxWidth: 350,
-                                            height: 'auto',
+                                            maxWidth: 320,
+                                            objectFit: 'contain',
                                             margin: theme.baseFontSize,
                                         }}
                                     />

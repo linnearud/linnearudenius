@@ -55,7 +55,7 @@ const BirdListing = ({
                         styles={{
                             width: 70,
                             height: 40,
-                            objectFit: "cover",
+                            objectFit: "contain",
                             marginRight: theme.baseFontSize,
                             ...breakpoints.tablet({
                                 width: 150,
