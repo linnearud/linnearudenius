@@ -5,7 +5,7 @@ import { genera } from "./genera";
 
 export const birds = [
     {
-        id: '',
+        id: 'apus-apus',
         order: orders.apodiformes,
         family: families.apodidae,
         subfamily: subfamilies.apodinae,

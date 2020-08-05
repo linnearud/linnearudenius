@@ -25,6 +25,7 @@ import {
     distinct,
     getBirdsByOrderId,
     getBirdsByFamilyId,
+    getBirdsBySubfamilyId,
 } from "../data/helpers";
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
@@ -490,56 +491,34 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
     }, [currentIndex]);
 
     const getBirdAlternatives = () => {
-        const familyBirdAlternatives = getBirdsByFamilyId(
-            birds[currentIndex].family.id
-        ).filter((bird) => bird.id !== birds[currentIndex].id);
-        const orderBirdAlternatives = getBirdsByOrderId(
-            birds[currentIndex].order.id
-        ).filter((bird) => bird.id !== birds[currentIndex].id);
-        const allBirds = ALL_BIRDS.filter(
-            (bird) => bird.id !== birds[currentIndex].id
-        );
-
-        console.log(getBirdsByFamilyId(
-            birds[currentIndex].family.id
-        ))
-
-        let alternatives = [];
-        if (familyBirdAlternatives.length > 1) {
-            alternatives = getRandom(familyBirdAlternatives, 2);
-        } else if (familyBirdAlternatives.length === 1) {
-            const filteredOrderBirdAlternatives = orderBirdAlternatives.filter(
-                (bird) => bird.id !== familyBirdAlternatives[0].id
-            );
-
-            if (filteredOrderBirdAlternatives.length > 0) {
-                alternatives = [
-                    familyBirdAlternatives[0],
-                    getRandom(filteredOrderBirdAlternatives, 1),
-                ];
-            } else {
-                const filteredAllBirdsAlternatives = allBirds.filter(
-                    (bird) => bird.id !== familyBirdAlternatives[0].id
-                );
-                alternatives = [
-                    familyBirdAlternatives[0],
-                    getRandom(filteredAllBirdsAlternatives, 1),
-                ];
+        const currentBird = birds[currentIndex]
+        const allBirds = ALL_BIRDS.map(bird => ({
+            id: bird.id,
+            name_sv: bird.name_sv,
+            prio: 
+                bird.genus.id === currentBird.genus.id ? 1 :
+                bird.family.id === currentBird.family.id ? 2 :
+                bird.order.id === currentBird.order.id ? 3 : 4
+        })).filter(bird => bird.id !== currentBird.id)
+        
+        let alternatives = []
+        let currentPrio = 0
+        while (alternatives.length < 2) {
+            const currentAlternatives = allBirds.filter(bird => bird.prio === currentPrio)
+            if (alternatives.length === 0) {
+                if (currentAlternatives.length > 1) {
+                    alternatives = getRandom(currentAlternatives, 2)
+                } else if (currentAlternatives.length === 1) {
+                    alternatives.push(currentAlternatives[0])
+                }
+            } else if (alternatives.length === 1) {
+                if (currentAlternatives.length > 0) {
+                    alternatives.push(getRandom(currentAlternatives, 1))
+                } else if (currentAlternatives.length === 1) {
+                    alternatives.push(currentAlternatives[0])
+                }
             }
-        } else {
-            if (orderBirdAlternatives.length > 2) {
-                alternatives = getRandom(orderBirdAlternatives, 2);
-            } else if (orderBirdAlternatives === 1) {
-                const filteredAllBirdsAlternatives = allBirds.filter(
-                    (bird) => bird.id !== orderBirdAlternatives[0].id
-                );
-                alternatives = [
-                    orderBirdAlternatives[0],
-                    getRandom(filteredAllBirdsAlternatives, 1),
-                ];
-            } else {
-                alternatives = getRandom(allBirds, 2);
-            }
+            currentPrio += 1
         }
 
         return [
