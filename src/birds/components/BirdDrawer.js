@@ -1,6 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
+import * as api from '../api'
+import { backendServiceHost } from "../api"
 
 import {
     MollyThemeContext,
@@ -12,6 +14,17 @@ import {
 
 const BirdDrawer = ({ bird, onClose }) => {
     const theme = useContext(MollyThemeContext);
+    const [images, setImages] = useState([])
+
+    useEffect(() => {
+        if (!bird.id) return;
+        async function fetchImages() {
+            const { data: tmp } = await api.get(`/birds/${bird.id}`)
+            setImages(tmp.images)
+        }
+        fetchImages()
+    }, [bird])
+
     return (
         <div
             css={{
@@ -79,7 +92,7 @@ const BirdDrawer = ({ bird, onClose }) => {
                             <span css={{ fontWeight: 700 }}>
                                 Kännetecken (från fågeln.se):{" "}
                             </span>
-                            {bird.characteristics_fageln}
+                            {bird.characteristics}
                         </Typography.Body>
                         <Typography.Body
                             css={{ marginTop: theme.baseFontSize }}
@@ -87,7 +100,7 @@ const BirdDrawer = ({ bird, onClose }) => {
                             <span css={{ fontWeight: 700 }}>
                                 Finnes (från fågeln.se):{" "}
                             </span>
-                            {bird.spread_fageln}
+                            {bird.spread}
                         </Typography.Body>
                         <Typography.Body
                             css={{ marginTop: theme.baseFontSize }}
@@ -113,17 +126,25 @@ const BirdDrawer = ({ bird, onClose }) => {
                                 </a>
                             </Typography.Body>
                         )}
-                        <div css={{ marginTop: theme.baseFontSize, ...breakpoints.tablet({display: 'flex', flexWrap: 'wrap'})}}>
-                            {bird.images.map((image) => {
+                        <div
+                            css={{
+                                marginTop: theme.baseFontSize,
+                                ...breakpoints.tablet({
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                }),
+                            }}
+                        >
+                            {images.map((image) => {
                                 return (
                                     <img
-                                        src={image}
-                                        key={image}
+                                        src={backendServiceHost + image.path}
+                                        key={image.path}
                                         alt={bird.name_latin}
                                         css={{
                                             width: "calc(100% - 32px)",
                                             maxWidth: 320,
-                                            objectFit: 'contain',
+                                            objectFit: "contain",
                                             margin: theme.baseFontSize,
                                         }}
                                     />

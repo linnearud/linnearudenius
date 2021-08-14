@@ -4,6 +4,7 @@ import { jsx } from "@emotion/core";
 import { getGroups, getBirdsFromGroup } from "./data/helpers";
 import * as pages from "./pages";
 import { SearchIndexProvider } from "./search/SearchIndexContext";
+import { BirdDataProvider } from "./data/BirdDataContext";
 import { createIndex } from "./search/helpers.js";
 
 import {
@@ -78,109 +79,116 @@ const Birds = () => {
     return (
         <MollyThemeProvider theme={birdTheme2}>
             <SearchIndexProvider index={index}>
-                <div
-                    css={{
-                        width: "100vw",
-                        minHeight: "100vh",
-                        margin: "auto",
-                        background: "#eeeeee",
-                        ...breakpoints.desktop({
-                            padding: "20px 0",
-                        }),
-                    }}
-                >
+                <BirdDataProvider>
                     <div
                         css={{
                             width: "100vw",
-                            minHeight: "calc(100vh - 64px)",
-                            background: "#ffffff",
-                            maxWidth: "1150px",
+                            minHeight: "100vh",
                             margin: "auto",
+                            background: "#eeeeee",
                             ...breakpoints.desktop({
-                                border: "1px solid #dae8dd",
-                                boxShadow: "0px 2px 10px rgba(0,0,0,0.2)",
+                                padding: "20px 0",
                             }),
                         }}
                     >
-                        <div>
-                            <div
-                                css={{
-                                    background: `url(${require("../images/forest.jpg")})`,
-                                }}
-                            >
-                                <Tabs.Container
-                                    activeBackgroundColor={
-                                        constants.COLORS.WHITE
-                                    }
-                                    activeColor={constants.COLORS.BLACK}
-                                    color={constants.COLORS.WHITE}
-                                    backgroundColor={"rgba(0,0,0,0.5)"}
+                        <div
+                            css={{
+                                width: "100vw",
+                                minHeight: "calc(100vh - 64px)",
+                                background: "#ffffff",
+                                maxWidth: "1150px",
+                                margin: "auto",
+                                ...breakpoints.desktop({
+                                    border: "1px solid #dae8dd",
+                                    boxShadow: "0px 2px 10px rgba(0,0,0,0.2)",
+                                }),
+                            }}
+                        >
+                            <div>
+                                <div
+                                    css={{
+                                        background: `url(${require("../images/forest.jpg")})`,
+                                    }}
                                 >
-                                    <Tabs.Item
-                                        active={location.pathname === "/birds"}
-                                        text="Bläddra"
-                                        onClick={() => navigateToPage("/birds")}
+                                    <Tabs.Container
+                                        activeBackgroundColor={
+                                            constants.COLORS.WHITE
+                                        }
+                                        activeColor={constants.COLORS.BLACK}
+                                        color={constants.COLORS.WHITE}
+                                        backgroundColor={"rgba(0,0,0,0.5)"}
+                                    >
+                                        <Tabs.Item
+                                            active={
+                                                location.pathname === "/birds"
+                                            }
+                                            text="Bläddra"
+                                            onClick={() =>
+                                                navigateToPage("/birds")
+                                            }
+                                        />
+                                        <Tabs.Item
+                                            active={
+                                                location.pathname ===
+                                                "/birds/search"
+                                            }
+                                            text="Sök"
+                                            onClick={() =>
+                                                navigateToPage("/birds/search")
+                                            }
+                                        />
+                                        <Tabs.Item
+                                            active={
+                                                location.pathname ===
+                                                "/birds/compare"
+                                            }
+                                            onClick={() =>
+                                                navigateToPage("/birds/compare")
+                                            }
+                                            text="Jämför"
+                                        />
+                                        <Tabs.Item
+                                            active={
+                                                location.pathname ===
+                                                "/birds/quiz"
+                                            }
+                                            onClick={() =>
+                                                navigateToPage("/birds/quiz")
+                                            }
+                                            text="Quiz"
+                                        />
+                                    </Tabs.Container>
+                                </div>
+                                <Switch>
+                                    <Redirect
+                                        from="/:url*(/+)"
+                                        to={location.pathname.slice(0, -1)}
                                     />
-                                    <Tabs.Item
-                                        active={
-                                            location.pathname ===
-                                            "/birds/search"
-                                        }
-                                        text="Sök"
-                                        onClick={() =>
-                                            navigateToPage("/birds/search")
-                                        }
+                                    <Route
+                                        path="/birds/"
+                                        exact
+                                        component={pages.BrowsePage}
                                     />
-                                    <Tabs.Item
-                                        active={
-                                            location.pathname ===
-                                            "/birds/compare"
-                                        }
-                                        onClick={() =>
-                                            navigateToPage("/birds/compare")
-                                        }
-                                        text="Jämför"
+                                    <Route
+                                        path="/birds/search"
+                                        exact
+                                        component={pages.SearchPage}
                                     />
-                                    <Tabs.Item
-                                        active={
-                                            location.pathname === "/birds/quiz"
-                                        }
-                                        onClick={() =>
-                                            navigateToPage("/birds/quiz")
-                                        }
-                                        text="Quiz"
+                                    <Route
+                                        path="/birds/compare"
+                                        exact
+                                        component={pages.ComparePage}
                                     />
-                                </Tabs.Container>
+                                    <Route
+                                        path="/birds/quiz"
+                                        exact
+                                        component={pages.QuizPage}
+                                    />
+                                </Switch>
                             </div>
-                            <Switch>
-                                <Redirect
-                                    from="/:url*(/+)"
-                                    to={location.pathname.slice(0, -1)}
-                                />
-                                <Route
-                                    path="/birds/"
-                                    exact
-                                    component={pages.BrowsePage}
-                                />
-                                <Route
-                                    path="/birds/search"
-                                    exact
-                                    component={pages.SearchPage}
-                                />
-                                <Route
-                                    path="/birds/compare"
-                                    exact
-                                    component={pages.ComparePage}
-                                />
-                                <Route
-                                    path="/birds/quiz"
-                                    exact
-                                    component={pages.QuizPage}
-                                />
-                            </Switch>
                         </div>
                     </div>
-                </div>
+                </BirdDataProvider>
             </SearchIndexProvider>
         </MollyThemeProvider>
     );

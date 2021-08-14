@@ -1,7 +1,8 @@
-import { useState, Fragment, useContext } from "react";
+import { useState, Fragment, useContext, useEffect } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 
+import * as api from "../api";
 import {
     MollyThemeContext,
     Typography,
@@ -10,16 +11,9 @@ import {
     CloseIcon,
     CaretIcon,
 } from "../../molly-ui";
-import {
-    ORDERS,
-    GENERA,
-    ALL_BIRDS,
-    getGeneraIdsBySubfamily,
-    getGeneraIdsByFamily,
-    getBirdsByGeneraId,
-} from "../data/helpers";
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
+import BirdDataContext from "../data/BirdDataContext";
 
 export const BrowsePage = () => {
     const [selectedBird, setSelectedBird] = useState({});
@@ -28,7 +22,10 @@ export const BrowsePage = () => {
 
     return (
         <div>
-            <BirdDrawer bird={selectedBird} onClose={() => setSelectedBird({})} />
+            <BirdDrawer
+                bird={selectedBird}
+                onClose={() => setSelectedBird({})}
+            />
             <FullList selectBird={setSelectedBird} />
         </div>
     );
@@ -41,162 +38,117 @@ const FullList = ({ selectBird }) => {
     const [openGenera, setOpenGenera] = useState(new Set());
 
     const theme = useContext(MollyThemeContext);
+    const { data, isLoading } = useContext(BirdDataContext);
 
-    const toggleOpen = (id, set, toggleFn) => {
+    if (isLoading) {
+        return null;
+    }
+
+    const levels = {
+        dataKey: "orders",
+        level: 0,
+        toggleOpen: (slug) => toggleOpen(slug, openOrders, setOpenOrders),
+        isOpen: (slug) => openOrders.has(slug),
+        next: [
+            {
+                dataKey: "families",
+                level: 1,
+                toggleOpen: (slug) => toggleOpen(slug, openFamilies, setOpenFamilies),
+                isOpen: (slug) => openFamilies.has(slug),
+                next: [
+                    {
+                        dataKey: "subfamilies",
+                        level: 2,
+                        toggleOpen: (slug) => toggleOpen(slug, openSubfamilies, setOpenSubfamilies),
+                        isOpen: (slug) => openSubfamilies.has(slug),
+                        next: [
+                            {
+                                dataKey: "genera",
+                                level: 3,
+                                toggleOpen: (slug) => toggleOpen(slug, openGenera, setOpenGenera),
+                                isOpen: (slug) => openGenera.has(slug),
+                                next: [
+                                    {
+                                        dataKey: "birds",
+                                        level: 4,
+                                        toggleOpen: bird => selectBird(bird),
+                                        isBird: true,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        dataKey: "level_2_genera",
+                        level: 2,
+                        toggleOpen: (slug) => toggleOpen(slug, openGenera, setOpenGenera),
+                        isOpen: (slug) => openGenera.has(slug),
+                        next: [
+                            {
+                                dataKey: "birds",
+                                level: 3,
+                                toggleOpen: bird => selectBird(bird),
+                                isBird: true,
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    };
+
+    const toggleOpen = (slug, set, toggleFn) => {
         const modifiedSet = new Set(set);
-        if (modifiedSet.has(id)) {
-            modifiedSet.delete(id);
+        if (modifiedSet.has(slug)) {
+            modifiedSet.delete(slug);
         } else {
-            modifiedSet.add(id);
+            modifiedSet.add(slug);
         }
         toggleFn(modifiedSet);
     };
 
     return (
-        <div>
-            {Object.values(ORDERS).map((order) => (
-                <Item
-                    {...order}
-                    level={0}
-                    isOpen={openOrders.has(order.id)}
-                    key={order.id}
-                    toggleOpen={() =>
-                        toggleOpen(order.id, openOrders, setOpenOrders)
-                    }
-                >
-                    <div>
-                        {order.families.map((family) => (
-                            <Item
-                                {...family}
-                                level={1}
-                                isOpen={openFamilies.has(family.id)}
-                                key={family.id}
-                                toggleOpen={() =>
-                                    toggleOpen(
-                                        family.id,
-                                        openFamilies,
-                                        setOpenFamilies
-                                    )
-                                }
-                            >
-                                {family.subfamilies.length > 0 ? (
-                                    <div>
-                                        {family.subfamilies.map((subfamily) => (
-                                            <Item
-                                                {...subfamily}
-                                                level={2}
-                                                isOpen={openSubfamilies.has(
-                                                    subfamily.id
-                                                )}
-                                                key={subfamily.id}
-                                                toggleOpen={() =>
-                                                    toggleOpen(
-                                                        subfamily.id,
-                                                        openSubfamilies,
-                                                        setOpenSubfamilies
-                                                    )
-                                                }
-                                            >
-                                                <div>
-                                                    {getGeneraIdsBySubfamily(
-                                                        subfamily.id
-                                                    ).map((genusId) => (
-                                                        <Item
-                                                            {...GENERA[genusId]}
-                                                            level={3}
-                                                            isOpen={openGenera.has(
-                                                                genusId
-                                                            )}
-                                                            key={genusId}
-                                                            toggleOpen={() =>
-                                                                toggleOpen(
-                                                                    genusId,
-                                                                    openGenera,
-                                                                    setOpenGenera
-                                                                )
-                                                            }
-                                                        >
-                                                            <div>
-                                                                {getBirdsByGeneraId(
-                                                                    genusId
-                                                                ).map(
-                                                                    (bird) => (
-                                                                        <Item
-                                                                            {...bird}
-                                                                            key={
-                                                                                bird.id
-                                                                            }
-                                                                            level={
-                                                                                4
-                                                                            }
-                                                                            toggleOpen={() =>
-                                                                                selectBird(
-                                                                                    bird
-                                                                                )
-                                                                            }
-                                                                        />
-                                                                    )
-                                                                )}
-                                                            </div>
-                                                        </Item>
-                                                    ))}
-                                                </div>
-                                            </Item>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        {getGeneraIdsByFamily(family.id).map(
-                                            (genusId) => (
-                                                <Item
-                                                    {...GENERA[genusId]}
-                                                    level={2}
-                                                    isOpen={openGenera.has(
-                                                        genusId
-                                                    )}
-                                                    key={genusId}
-                                                    toggleOpen={() =>
-                                                        toggleOpen(
-                                                            genusId,
-                                                            openGenera,
-                                                            setOpenGenera
-                                                        )
-                                                    }
-                                                >
-                                                    <div theme={theme}>
-                                                        {getBirdsByGeneraId(
-                                                            genusId
-                                                        ).map((bird) => (
-                                                            <Item
-                                                                {...bird}
-                                                                level={4}
-                                                                key={bird.id}
-                                                                toggleOpen={() =>
-                                                                    selectBird(
-                                                                        bird
-                                                                    )
-                                                                }
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                </Item>
-                                            )
-                                        )}
-                                    </div>
-                                )}
-                            </Item>
-                        ))}
-                    </div>
-                </Item>
-            ))}
-        </div>
+        <RecursiveItem data={data} levels={levels} />
     );
+};
+
+const RecursiveItem = ({data, levels}) => {
+    const mapData = data[levels.dataKey];
+
+    if (levels.isBird) {
+        return mapData.map((itm) => (
+            <Item
+                {...itm}
+                level={levels.level}
+                key={itm.slug}
+                toggleOpen={() => levels.toggleOpen(itm)}
+            />
+        ));
+    } else {
+        return mapData.map((itm) => (
+            <Item
+                {...itm}
+                isOpen={levels.isOpen(itm.slug)}
+                level={levels.level}
+                key={itm.slug}
+                toggleOpen={() => levels.toggleOpen(itm.slug)}
+            >   
+                {levels.next.map((lvl, i) => (
+                    <RecursiveItem
+                        key={i}
+                        data={itm}
+                        levels={lvl}
+                    />
+                ))}
+            </Item>
+        ));
+    }
 };
 
 const Item = ({
     name_sv,
     name_latin,
-    image,
+    image_path,
     level,
     children,
     isOpen,
@@ -204,12 +156,11 @@ const Item = ({
     ...rest
 }) => {
     const theme = useContext(MollyThemeContext);
-
     return (
         <BirdListing
             name_sv={name_sv}
             name_latin={name_latin}
-            image={image}
+            image_path={image_path}
             onClick={toggleOpen}
             fontStyles={{
                 fontSize: level < 3 ? theme.baseFontSize - level : 14,

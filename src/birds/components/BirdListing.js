@@ -1,6 +1,7 @@
 import { useContext } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
+import { backendServiceHost } from "../api"
 
 import {
     MollyThemeContext,
@@ -13,7 +14,7 @@ import {
 const BirdListing = ({
     name_sv,
     name_latin,
-    image,
+    image_path,
     children,
     onClick,
     onClose,
@@ -50,7 +51,7 @@ const BirdListing = ({
                         2}px ${theme.baseFontSize / 2}px ${leftPadding}px`,
                 }}
             >
-                {image && (
+                {image_path && (
                     <ImageLoader
                         styles={{
                             width: 70,
@@ -63,7 +64,7 @@ const BirdListing = ({
                                 display: "initial",
                             }),
                         }}
-                        src={image}
+                        src={backendServiceHost + image_path}
                     />
                 )}
                 <div
