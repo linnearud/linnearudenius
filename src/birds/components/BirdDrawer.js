@@ -1,29 +1,28 @@
 import { useContext, useEffect, useState } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import * as api from '../api'
-import { backendServiceHost } from "../api"
+import * as api from "../api";
+import { backendServiceHost } from "../api";
 
 import {
     MollyThemeContext,
     breakpoints,
     Typography,
-    ImageLoader,
     CloseIcon,
 } from "../../molly-ui";
 
 const BirdDrawer = ({ bird, onClose }) => {
     const theme = useContext(MollyThemeContext);
-    const [images, setImages] = useState([])
+    const [images, setImages] = useState([]);
 
     useEffect(() => {
         if (!bird.id) return;
         async function fetchImages() {
-            const { data: tmp } = await api.get(`/birds/${bird.id}`)
-            setImages(tmp.images)
+            const { data: tmp } = await api.get(`/birds/${bird.id}`);
+            setImages(tmp.images);
         }
-        fetchImages()
-    }, [bird])
+        fetchImages();
+    }, [bird]);
 
     return (
         <div

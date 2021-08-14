@@ -1,24 +1,14 @@
-import { useState, Fragment, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 
-import * as api from "../api";
-import {
-    MollyThemeContext,
-    Typography,
-    breakpoints,
-    constants,
-    CloseIcon,
-    CaretIcon,
-} from "../../molly-ui";
+import { MollyThemeContext } from "../../molly-ui";
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
 import BirdDataContext from "../data/BirdDataContext";
 
 export const BrowsePage = () => {
     const [selectedBird, setSelectedBird] = useState({});
-
-    const theme = useContext(MollyThemeContext);
 
     return (
         <div>
@@ -37,7 +27,6 @@ const FullList = ({ selectBird }) => {
     const [openSubfamilies, setOpenSubfamilies] = useState(new Set());
     const [openGenera, setOpenGenera] = useState(new Set());
 
-    const theme = useContext(MollyThemeContext);
     const { data, isLoading } = useContext(BirdDataContext);
 
     if (isLoading) {
@@ -53,25 +42,32 @@ const FullList = ({ selectBird }) => {
             {
                 dataKey: "families",
                 level: 1,
-                toggleOpen: (slug) => toggleOpen(slug, openFamilies, setOpenFamilies),
+                toggleOpen: (slug) =>
+                    toggleOpen(slug, openFamilies, setOpenFamilies),
                 isOpen: (slug) => openFamilies.has(slug),
                 next: [
                     {
                         dataKey: "subfamilies",
                         level: 2,
-                        toggleOpen: (slug) => toggleOpen(slug, openSubfamilies, setOpenSubfamilies),
+                        toggleOpen: (slug) =>
+                            toggleOpen(
+                                slug,
+                                openSubfamilies,
+                                setOpenSubfamilies
+                            ),
                         isOpen: (slug) => openSubfamilies.has(slug),
                         next: [
                             {
                                 dataKey: "genera",
                                 level: 3,
-                                toggleOpen: (slug) => toggleOpen(slug, openGenera, setOpenGenera),
+                                toggleOpen: (slug) =>
+                                    toggleOpen(slug, openGenera, setOpenGenera),
                                 isOpen: (slug) => openGenera.has(slug),
                                 next: [
                                     {
                                         dataKey: "birds",
                                         level: 4,
-                                        toggleOpen: bird => selectBird(bird),
+                                        toggleOpen: (bird) => selectBird(bird),
                                         isBird: true,
                                     },
                                 ],
@@ -81,13 +77,14 @@ const FullList = ({ selectBird }) => {
                     {
                         dataKey: "level_2_genera",
                         level: 2,
-                        toggleOpen: (slug) => toggleOpen(slug, openGenera, setOpenGenera),
+                        toggleOpen: (slug) =>
+                            toggleOpen(slug, openGenera, setOpenGenera),
                         isOpen: (slug) => openGenera.has(slug),
                         next: [
                             {
                                 dataKey: "birds",
                                 level: 3,
-                                toggleOpen: bird => selectBird(bird),
+                                toggleOpen: (bird) => selectBird(bird),
                                 isBird: true,
                             },
                         ],
@@ -107,12 +104,10 @@ const FullList = ({ selectBird }) => {
         toggleFn(modifiedSet);
     };
 
-    return (
-        <RecursiveItem data={data} levels={levels} />
-    );
+    return <RecursiveItem data={data} levels={levels} />;
 };
 
-const RecursiveItem = ({data, levels}) => {
+const RecursiveItem = ({ data, levels }) => {
     const mapData = data[levels.dataKey];
 
     if (levels.isBird) {
@@ -132,13 +127,9 @@ const RecursiveItem = ({data, levels}) => {
                 level={levels.level}
                 key={itm.slug}
                 toggleOpen={() => levels.toggleOpen(itm.slug)}
-            >   
+            >
                 {levels.next.map((lvl, i) => (
-                    <RecursiveItem
-                        key={i}
-                        data={itm}
-                        levels={lvl}
-                    />
+                    <RecursiveItem key={i} data={itm} levels={lvl} />
                 ))}
             </Item>
         ));

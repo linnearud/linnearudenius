@@ -1,43 +1,32 @@
-import { useState, Fragment, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { SearchIndexContext } from "../search/SearchIndexContext";
+import { useSearch } from "../search/SearchIndexContext";
 import Loader from "../components/Loader";
-import useConstant from "use-constant";
-import AwesomeDebouncePromise from "awesome-debounce-promise";
+import { backendServiceHost } from "../api";
 
 import {
     MollyThemeContext,
     Typography,
     breakpoints,
     constants,
-    CloseIcon,
-    CaretIcon,
     TextInput,
     Button,
     ImageLoader,
 } from "../../molly-ui";
-import { ALL_BIRDS, distinct } from "../data/helpers";
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
 
 export const ComparePage = () => {
     const [inputValue, setInputValue] = useState("");
     const [selectedBirds, setSelectedBirds] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
     const [showComparison, setShowComparison] = useState(false);
+
     const theme = useContext(MollyThemeContext);
-    const index = useContext(SearchIndexContext);
+    const { isLoading, results, search, ready } = useSearch();
 
     useEffect(() => {
-        if (inputValue.length !== 0) {
-            setIsLoading(true);
-            debouncedSearchFunction(inputValue);
-        } else {
-            setSearchResults([]);
-            setIsLoading(false);
-        }
+        search(inputValue);
     }, [inputValue]);
 
     const selectBird = (bird) => {
@@ -45,7 +34,7 @@ export const ComparePage = () => {
         selectedBirdsCopy.push(bird);
 
         setInputValue("");
-        setSearchResults([]);
+        search("");
         setSelectedBirds(selectedBirdsCopy);
     };
 
@@ -56,23 +45,9 @@ export const ComparePage = () => {
         setShowComparison(false);
     };
 
-    const search = (searchInput) => {
-        let loadedImages = 0;
-        const uniqueResults = index
-            .search(searchInput)
-            .map((res) => res.split("_")[0])
-            .filter(distinct);
-        const results = uniqueResults.map((res) => {
-            return ALL_BIRDS.find((bird) => bird.id === res);
-        });
-
-        setIsLoading(false);
-        setSearchResults(results);
-    };
-
-    const debouncedSearchFunction = useConstant(() =>
-        AwesomeDebouncePromise(search, 300)
-    );
+    if (!ready) {
+        return null;
+    }
 
     return (
         <div
@@ -120,20 +95,22 @@ export const ComparePage = () => {
                 />
             )}
             {isLoading && <Loader color={theme.colors.primary.base} />}
-            {searchResults.length > 0 &&
+            {results.length > 0 &&
                 !isLoading &&
-                searchResults.map((bird) => {
+                results.map((bird) => {
                     if (bird) {
                         return (
                             <BirdListing
                                 {...bird}
                                 key={bird.id}
-                                image={bird.images[0]}
+                                image_path={bird.images[0].path}
                                 showImageOnMobile={true}
                                 onClick={() => selectBird(bird)}
                                 hasBorder
                             />
                         );
+                    } else {
+                        return null;
                     }
                 })}
             {selectedBirds.length === 2 && !showComparison && (
@@ -156,7 +133,7 @@ export const ComparePage = () => {
                 </div>
             )}
             {!isLoading &&
-                searchResults.length === 0 &&
+                results.length === 0 &&
                 inputValue &&
                 "Inga resultat"}
             {showComparison && (
@@ -190,9 +167,9 @@ const BirdInfo = ({ bird }) => {
                 marginLeft: theme.baseFontSize / 2,
                 ...breakpoints.tablet({
                     width: 616,
-                    margin: 'auto',
+                    margin: "auto",
                     marginBottom: theme.baseFontSize,
-                })
+                }),
             }}
         >
             <BirdDrawer
@@ -223,9 +200,9 @@ const BirdInfo = ({ bird }) => {
                         width: 300,
                         height: 200,
                         objectFit: "cover",
-                        margin: 'auto',
+                        margin: "auto",
                     }}
-                    src={bird.images[imageIndex]}
+                    src={backendServiceHost + bird.images[imageIndex].path}
                 />
                 {imageIndex !== bird.images.length - 1 && (
                     <ImageLoader
@@ -234,13 +211,16 @@ const BirdInfo = ({ bird }) => {
                             height: 200,
                             objectFit: "cover",
                             display: "none",
-                            margin: 'auto',
+                            margin: "auto",
                             paddingLeft: theme.baseFontSize,
                             ...breakpoints.tablet({
                                 display: "initial",
                             }),
                         }}
-                        src={bird.images[imageIndex + 1]}
+                        src={
+                            backendServiceHost +
+                            bird.images[imageIndex + 1].path
+                        }
                     />
                 )}
             </div>
@@ -254,48 +234,50 @@ const BirdInfo = ({ bird }) => {
                 <Typography.Caption
                     onClick={() => setImageIndex(imageIndex - 1)}
                     css={{
-                        cursor: 'pointer',
-                        ...breakpoints.tablet({
-                            display: 'none',
-                        })
-                    }}
-                >
-                    {imageIndex != 0 && "< Föregående"}{" "}
-                </Typography.Caption>
-                <Typography.Caption
-                    onClick={() => setImageIndex(imageIndex - 2)}
-                    css={{
-                        display: 'none',
-                        cursor: 'pointer',
-                        ...breakpoints.tablet({
-                            display: 'initial',
-                        })
-                    }}
-                >
-                    {imageIndex != 0 && "< Föregående"}{" "}
-                </Typography.Caption>
-                <Typography.Caption
-                    onClick={() => setImageIndex(imageIndex + 1)}
-                    css={{
-                        cursor: 'pointer',
+                        cursor: "pointer",
                         ...breakpoints.tablet({
                             display: "none",
                         }),
                     }}
                 >
-                    {imageIndex != bird.images.length - 1 && "Nästa >"}
+                    {imageIndex !== 0 && "< Föregående"}{" "}
                 </Typography.Caption>
                 <Typography.Caption
-                    onClick={() => setImageIndex(imageIndex + 2)}
+                    onClick={() => setImageIndex(imageIndex - 2)}
                     css={{
                         display: "none",
-                        cursor: 'pointer',
+                        cursor: "pointer",
                         ...breakpoints.tablet({
                             display: "initial",
                         }),
                     }}
                 >
-                    {imageIndex != bird.images.length - 1 && imageIndex != bird.images.length - 2 && "Nästa >"}
+                    {imageIndex !== 0 && "< Föregående"}{" "}
+                </Typography.Caption>
+                <Typography.Caption
+                    onClick={() => setImageIndex(imageIndex + 1)}
+                    css={{
+                        cursor: "pointer",
+                        ...breakpoints.tablet({
+                            display: "none",
+                        }),
+                    }}
+                >
+                    {imageIndex !== bird.images.length - 1 && "Nästa >"}
+                </Typography.Caption>
+                <Typography.Caption
+                    onClick={() => setImageIndex(imageIndex + 2)}
+                    css={{
+                        display: "none",
+                        cursor: "pointer",
+                        ...breakpoints.tablet({
+                            display: "initial",
+                        }),
+                    }}
+                >
+                    {imageIndex !== bird.images.length - 1 &&
+                        imageIndex !== bird.images.length - 2 &&
+                        "Nästa >"}
                 </Typography.Caption>
             </div>
         </div>

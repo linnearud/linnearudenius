@@ -13,6 +13,7 @@ export const BirdDataProvider = ({ children }) => {
         async function fetchData() {
             const { data: orders } = await api.get("/orders")
             const { data: genera } = await api.get("/genera")
+            const { data: birds } = await api.get("/birds")
 
             const generaByFamily = genera.reduce((map, currentGenus) => {
                 if (currentGenus.family.slug in map) {
@@ -61,7 +62,7 @@ export const BirdDataProvider = ({ children }) => {
                 }
             })
 
-            setData({orders: data})
+            setData({orders: data, birds: birds})
             setIsLoading(false)
         }
         fetchData()

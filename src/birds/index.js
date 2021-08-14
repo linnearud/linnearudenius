@@ -1,11 +1,9 @@
-import { useState, Fragment, useContext } from "react";
+import { useState } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
-import { getGroups, getBirdsFromGroup } from "./data/helpers";
 import * as pages from "./pages";
 import { SearchIndexProvider } from "./search/SearchIndexContext";
 import { BirdDataProvider } from "./data/BirdDataContext";
-import { createIndex } from "./search/helpers.js";
 
 import {
     Route,
@@ -14,35 +12,8 @@ import {
     useLocation,
     Redirect,
 } from "react-router-dom";
-import {
-    MollyThemeProvider,
-    MollyThemeContext,
-    breakpoints,
-    constants,
-    Tabs,
-} from "../molly-ui";
+import { MollyThemeProvider, breakpoints, constants, Tabs } from "../molly-ui";
 
-const birdTheme = {
-    colors: {
-        primary: "#214E34",
-        secondary: "#214E34",
-        tertiary: "#214E34",
-        black: "#0e1711",
-        darkGrey: "#aba9a9",
-        disabledGrey: "#cfcccc",
-        lightGrey: "#E6E6E6",
-        white: "#f5fcf5",
-        success: "#5CAB7D",
-        failure: "#C3423F",
-    },
-    fontFamily: "Noto Sans HK",
-    baseFontSize: 16,
-    typeScale: 1.25,
-    lineHeightRatio: 1.5,
-    headingLineHeightRatio: 1.25,
-    borderRadius: "3px",
-    componentMargin: "10px",
-};
 const birdTheme2 = {
     colors: {
         primary: "#67ab83",
@@ -66,20 +37,17 @@ const birdTheme2 = {
 };
 
 const Birds = () => {
-    const [menuVisible, setMenuVisible] = useState(false);
     const history = useHistory();
-    const index = createIndex();
     const location = useLocation();
 
     const navigateToPage = (page) => {
-        setMenuVisible(false);
         history.push(page);
     };
 
     return (
         <MollyThemeProvider theme={birdTheme2}>
-            <SearchIndexProvider index={index}>
-                <BirdDataProvider>
+            <BirdDataProvider>
+                <SearchIndexProvider>
                     <div
                         css={{
                             width: "100vw",
@@ -188,8 +156,8 @@ const Birds = () => {
                             </div>
                         </div>
                     </div>
-                </BirdDataProvider>
-            </SearchIndexProvider>
+                </SearchIndexProvider>
+            </BirdDataProvider>
         </MollyThemeProvider>
     );
 };
