@@ -46,7 +46,7 @@ export const ComparePage = () => {
     };
 
     if (!ready) {
-        return null;
+        return <Loader />;
     }
 
     return (

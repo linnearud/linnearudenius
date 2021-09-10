@@ -192,7 +192,7 @@ const SelectBirds = ({ setSelectedBirds }) => {
     }, [selected]);
 
     if (isLoading) {
-        return null;
+        return <Loader />;
     }
 
     const isChecked = (type, id) => {

@@ -20,7 +20,7 @@ export const SearchPage = () => {
     }, [inputValue]);
 
     if (!ready) {
-        return null;
+        return <Loader />;
     }
 
     return (
