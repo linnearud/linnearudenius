@@ -1,6 +1,7 @@
 import { useState, Fragment, useContext, useEffect } from "react";
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
+import * as api from "../api";
 
 import {
     MollyThemeContext,
@@ -30,6 +31,8 @@ import {
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
 import Loader from "../components/Loader";
+import BirdDataContext from "../data/BirdDataContext";
+import { backendServiceHost } from "../api";
 
 export const QuizPage = () => {
     const theme = useContext(MollyThemeContext);
@@ -182,139 +185,84 @@ const SelectBirds = ({ setSelectedBirds }) => {
     const [open, setOpen] = useState(false);
     const [openOrders, setOpenOrders] = useState(new Set());
     const [openFamilies, setOpenFamilies] = useState(new Set());
-    const [selectedOrders, setSelectedOrders] = useState(new Set());
-    const [selectedFamilies, setSelectedFamilies] = useState(new Set());
-    const [selectedGenera, setSelectedGenera] = useState(new Set());
+    const [openSubfamilies, setOpenSubfamilies] = useState(new Set());
+
+    const [selected, setSelected] = useState([]);
+
     const theme = useContext(MollyThemeContext);
+    const { data, isLoading } = useContext(BirdDataContext);
 
     useEffect(() => {
-        setSelectedBirds(
-            ALL_BIRDS.filter((bird) => selectedGenera.has(bird.genus.id))
-        );
-    }, [selectedGenera]);
+        if (isLoading) return;
 
-    const toggleOpen = (id, set, toggleFn) => {
+        setSelectedBirds(
+            data.birds.filter((bird) =>
+                selected.some((el) => el.split("_")[2] == bird.genus.id)
+            )
+        );
+    }, [selected]);
+
+    if (isLoading) {
+        return null;
+    }
+
+    const isChecked = (type, id) => {
+        if (type === "order") {
+            return selected.some((el) => el.split("_")[0] == id);
+        } else if (type === "family") {
+            return selected.some((el) => el.split("_")[1] == id);
+        } else if (type === "genus") {
+            return selected.some((el) => el.split("_")[2] == id);
+        }
+    };
+
+    const toggleChecked = (type, orderId, familyId, genusId) => {
+        let els = [];
+        let add;
+
+        if (type === "order") {
+            const order = data.orders.find((o) => o.id === orderId);
+            order.families.forEach((family) => {
+                family.genera.forEach((genus) => {
+                    els.push(`${orderId}_${family.id}_${genus.id}`);
+                });
+            });
+            add = !isChecked("order", orderId);
+        } else if (type === "family") {
+            const family = Object.values(data.families).find(
+                (f) => f.id === familyId
+            );
+            family.genera.forEach((genus) => {
+                els.push(`${orderId}_${familyId}_${genus.id}`);
+            });
+            add = !isChecked("family", familyId);
+        } else if (type === "genus") {
+            els.push(`${orderId}_${familyId}_${genusId}`);
+            add = !isChecked("genus", genusId);
+        }
+
+        let modified = [...selected];
+        els.forEach((currEl) => {
+            let exists = modified.includes(currEl);
+
+            if (exists && !add) {
+                modified = modified.filter((el) => el !== currEl);
+            } else if (add && !exists) {
+                modified = [...modified, currEl];
+            }
+        });
+
+        setSelected(modified);
+    };
+
+    const toggleOpen = (slug, set, toggleFn) => {
         const modifiedSet = new Set(set);
-        if (modifiedSet.has(id)) {
-            modifiedSet.delete(id);
+        if (modifiedSet.has(slug)) {
+            modifiedSet.delete(slug);
         } else {
-            modifiedSet.add(id);
+            modifiedSet.add(slug);
         }
         toggleFn(modifiedSet);
-    };
-
-    const toggleCheckedOrder = (id) => {
-        const modifiedOrderSet = new Set(selectedOrders);
-        const modifiedFamilySet = new Set(selectedFamilies);
-        const modifiedGeneraSet = new Set(selectedGenera);
-
-        const shouldRemove = modifiedOrderSet.has(id);
-
-        if (shouldRemove) {
-            modifiedOrderSet.delete(id);
-        } else {
-            modifiedOrderSet.add(id);
-        }
-
-        ORDERS[id].families.forEach((fam) => {
-            if (shouldRemove && modifiedFamilySet.has(fam.id)) {
-                modifiedFamilySet.delete(fam.id);
-            } else if (!shouldRemove && !modifiedFamilySet.has(fam.id)) {
-                modifiedFamilySet.add(fam.id);
-            }
-
-            getGeneraIdsByFamily(fam.id).forEach((genusId) => {
-                if (shouldRemove && modifiedGeneraSet.has(genusId)) {
-                    modifiedGeneraSet.delete(genusId);
-                } else if (!shouldRemove && !modifiedGeneraSet.has(genusId)) {
-                    modifiedGeneraSet.add(genusId);
-                }
-            });
-        });
-
-        setSelectedOrders(modifiedOrderSet);
-        setSelectedFamilies(modifiedFamilySet);
-        setSelectedGenera(modifiedGeneraSet);
-    };
-
-    const toggleCheckedFamily = (familyId, orderId) => {
-        const modifiedFamilySet = new Set(selectedFamilies);
-        const modifiedGeneraSet = new Set(selectedGenera);
-        const modifiedOrderSet = new Set(selectedOrders);
-
-        const shouldRemove = modifiedFamilySet.has(familyId);
-
-        if (shouldRemove) {
-            modifiedFamilySet.delete(familyId);
-            const shouldUpdateOrder = ORDERS[orderId].families.reduce(
-                (curr, fam) => {
-                    return curr && !modifiedFamilySet.has(fam.id);
-                },
-                true
-            );
-            if (shouldUpdateOrder) {
-                modifiedOrderSet.delete(orderId);
-            }
-        } else {
-            modifiedFamilySet.add(familyId);
-            if (!modifiedOrderSet.has(orderId)) {
-                modifiedOrderSet.add(orderId);
-            }
-        }
-
-        getGeneraIdsByFamily(familyId).forEach((genusId) => {
-            if (shouldRemove && modifiedGeneraSet.has(genusId)) {
-                modifiedGeneraSet.delete(genusId);
-            } else if (!shouldRemove && !modifiedGeneraSet.has(genusId)) {
-                modifiedGeneraSet.add(genusId);
-            }
-        });
-
-        setSelectedFamilies(modifiedFamilySet);
-        setSelectedGenera(modifiedGeneraSet);
-        setSelectedOrders(modifiedOrderSet);
-    };
-
-    const toggleCheckedGenera = (genusId, familyId, orderId) => {
-        const modifiedFamilySet = new Set(selectedFamilies);
-        const modifiedGeneraSet = new Set(selectedGenera);
-        const modifiedOrderSet = new Set(selectedOrders);
-
-        const shouldRemove = modifiedGeneraSet.has(genusId);
-
-        if (shouldRemove) {
-            modifiedGeneraSet.delete(genusId);
-            const shouldUpdateFamily = getGeneraIdsByFamily(familyId).reduce(
-                (curr, gen) => {
-                    return curr && !modifiedGeneraSet.has(gen);
-                },
-                true
-            );
-            if (shouldUpdateFamily) {
-                modifiedFamilySet.delete(familyId);
-                const shouldUpdateOrder = ORDERS[orderId].families.reduce(
-                    (curr, fam) => {
-                        return curr && !modifiedFamilySet.has(fam.id);
-                    },
-                    true
-                );
-                if (shouldUpdateOrder) {
-                    modifiedOrderSet.delete(orderId);
-                }
-            }
-        } else {
-            modifiedGeneraSet.add(genusId);
-            if (!modifiedFamilySet.has(familyId)) {
-                modifiedFamilySet.add(familyId);
-            }
-            if (!modifiedOrderSet.has(orderId)) {
-                modifiedOrderSet.add(orderId);
-            }
-        }
-
-        setSelectedFamilies(modifiedFamilySet);
-        setSelectedGenera(modifiedGeneraSet);
-        setSelectedOrders(modifiedOrderSet);
     };
 
     return (
@@ -342,59 +290,64 @@ const SelectBirds = ({ setSelectedBirds }) => {
             </div>
             {open && (
                 <div>
-                    {Object.values(ORDERS).map((order) => (
+                    {data.orders.map((order) => (
                         <Item
                             {...order}
                             level={0}
-                            isOpen={openOrders.has(order.id)}
-                            key={order.id}
+                            isOpen={openOrders.has(order.slug)}
+                            key={order.slug}
                             toggleOpen={() =>
-                                toggleOpen(order.id, openOrders, setOpenOrders)
+                                toggleOpen(
+                                    order.slug,
+                                    openOrders,
+                                    setOpenOrders
+                                )
                             }
-                            toggleChecked={() => toggleCheckedOrder(order.id)}
-                            checked={selectedOrders.has(order.id)}
+                            toggleChecked={() =>
+                                toggleChecked("order", order.id)
+                            }
+                            checked={isChecked("order", order.id)}
                         >
-                            {openOrders.has(order.id) &&
+                            {openOrders.has(order.slug) &&
                                 order.families.map((family) => (
                                     <Item
                                         {...family}
                                         level={1}
-                                        isOpen={openFamilies.has(family.id)}
-                                        key={family.id}
+                                        isOpen={openFamilies.has(family.slug)}
+                                        key={family.slug}
                                         toggleOpen={() =>
                                             toggleOpen(
-                                                family.id,
+                                                family.slug,
                                                 openFamilies,
                                                 setOpenFamilies
                                             )
                                         }
                                         toggleChecked={() =>
-                                            toggleCheckedFamily(
-                                                family.id,
-                                                order.id
+                                            toggleChecked(
+                                                "family",
+                                                order.id,
+                                                family.id
                                             )
                                         }
-                                        checked={selectedFamilies.has(
-                                            family.id
-                                        )}
+                                        checked={isChecked("family", family.id)}
                                     >
-                                        {openFamilies.has(family.id) &&
-                                            getGeneraIdsByFamily(
-                                                family.id
-                                            ).map((genusId) => (
+                                        {openFamilies.has(family.slug) &&
+                                            family.genera.map((genus) => (
                                                 <Item
-                                                    {...GENERA[genusId]}
+                                                    {...genus}
                                                     level={2}
-                                                    key={genusId}
+                                                    key={genus.slug}
                                                     toggleChecked={() =>
-                                                        toggleCheckedGenera(
-                                                            genusId,
+                                                        toggleChecked(
+                                                            "genus",
+                                                            order.id,
                                                             family.id,
-                                                            order.id
+                                                            genus.id
                                                         )
                                                     }
-                                                    checked={selectedGenera.has(
-                                                        genusId
+                                                    checked={isChecked(
+                                                        "genus",
+                                                        genus.id
                                                     )}
                                                 />
                                             ))}
@@ -464,15 +417,17 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
     const [inputError, setInputError] = useState(false);
     const [showDrawer, setShowDrawer] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+
     const theme = useContext(MollyThemeContext);
 
     useEffect(() => {
         const imagesTmp = birds.map((bird, i) => {
             const image = new Image();
             const randomImageSrc =
+                backendServiceHost +
                 birds[i].images[
                     Math.floor(Math.random() * birds[i].images.length)
-                ];
+                ].path;
             if (i === 0) {
                 image.onload = () => setIsLoading(false);
             }
@@ -484,52 +439,24 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
     }, []);
 
     useEffect(() => {
-        setCurrentAlternatives(getBirdAlternatives());
+        const newBird = async () => {
+            const birdAlternatives = await getBirdAlternatives();
+            setCurrentAlternatives(birdAlternatives);
+        };
+        newBird();
         setCurrentInput("");
         setInputValid(false);
         setInputError(false);
     }, [currentIndex]);
 
-    const getBirdAlternatives = () => {
+    const getBirdAlternatives = async () => {
         const currentBird = birds[currentIndex];
-        const allBirds = ALL_BIRDS.map((bird) => ({
-            id: bird.id,
-            name_sv: bird.name_sv,
-            prio:
-                bird.genus.id === currentBird.genus.id
-                    ? 1
-                    : bird.family.id === currentBird.family.id
-                    ? 2
-                    : bird.order.id === currentBird.order.id
-                    ? 3
-                    : 4,
-        })).filter((bird) => bird.id !== currentBird.id);
-
-        let alternatives = [];
-        let currentPrio = 0;
-        while (alternatives.length < 2) {
-            const currentAlternatives = allBirds.filter(
-                (bird) => bird.prio === currentPrio
-            );
-            if (alternatives.length === 0) {
-                if (currentAlternatives.length > 1) {
-                    alternatives = getRandom(currentAlternatives, 2);
-                } else if (currentAlternatives.length === 1) {
-                    alternatives.push(currentAlternatives[0]);
-                }
-            } else if (alternatives.length === 1) {
-                if (currentAlternatives.length > 0) {
-                    alternatives.push(getRandom(currentAlternatives, 1));
-                } else if (currentAlternatives.length === 1) {
-                    alternatives.push(currentAlternatives[0]);
-                }
-            }
-            currentPrio += 1;
-        }
-
+        const { data: relatedBirds } = await api.get(
+            `/birds/${currentBird.id}/related?size=2`
+        );
         return [
-            ...alternatives.map((alt) => alt.name_sv),
-            birds[currentIndex].name_sv,
+            ...relatedBirds.map((bird) => bird.name_sv),
+            currentBird.name_sv,
         ].sort(() => 0.5 - Math.random());
     };
 
@@ -548,7 +475,6 @@ const Quiz = ({ birds, openAnswer, setQuizResult }) => {
             if (currentIndex === birds.length - 1) {
                 setQuizResult([answers.filter(Boolean).length, birds.length]);
             } else {
-                console.log("here");
                 setCurrentIndex(currentIndex + 1);
             }
             return;
