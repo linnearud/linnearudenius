@@ -5,70 +5,58 @@ import { jsx } from "@emotion/core";
 import { MollyThemeContext } from "../../molly-ui";
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
+import Loader from "../components/Loader";
+import RecursiveList from "../components/RecursiveList"
 import BirdDataContext from "../data/BirdDataContext";
 
 export const BrowsePage = () => {
     const [selectedBird, setSelectedBird] = useState({});
-
-    return (
-        <div>
-            <BirdDrawer
-                bird={selectedBird}
-                onClose={() => setSelectedBird({})}
-            />
-            <FullList selectBird={setSelectedBird} />
-        </div>
-    );
-};
-
-const FullList = ({ selectBird }) => {
     const [openOrders, setOpenOrders] = useState(new Set());
     const [openFamilies, setOpenFamilies] = useState(new Set());
     const [openSubfamilies, setOpenSubfamilies] = useState(new Set());
     const [openGenera, setOpenGenera] = useState(new Set());
-
     const { data, isLoading } = useContext(BirdDataContext);
 
     if (isLoading) {
-        return null;
+        return <Loader />
     }
 
     const levels = {
         dataKey: "orders",
         level: 0,
-        toggleOpen: (slug) => toggleOpen(slug, openOrders, setOpenOrders),
-        isOpen: (slug) => openOrders.has(slug),
+        toggleOpen: (itm) => toggleOpen(itm.slug, openOrders, setOpenOrders),
+        isOpen: (itm) => openOrders.has(itm.slug),
         next: [
             {
                 dataKey: "families",
                 level: 1,
-                toggleOpen: (slug) =>
-                    toggleOpen(slug, openFamilies, setOpenFamilies),
-                isOpen: (slug) => openFamilies.has(slug),
+                toggleOpen: (itm) =>
+                    toggleOpen(itm.slug, openFamilies, setOpenFamilies),
+                isOpen: (itm) => openFamilies.has(itm.slug),
                 next: [
                     {
                         dataKey: "subfamilies",
                         level: 2,
-                        toggleOpen: (slug) =>
+                        toggleOpen: (itm) =>
                             toggleOpen(
-                                slug,
+                                itm.slug,
                                 openSubfamilies,
                                 setOpenSubfamilies
                             ),
-                        isOpen: (slug) => openSubfamilies.has(slug),
+                        isOpen: (itm) => openSubfamilies.has(itm.slug),
                         next: [
                             {
                                 dataKey: "genera",
                                 level: 3,
-                                toggleOpen: (slug) =>
-                                    toggleOpen(slug, openGenera, setOpenGenera),
-                                isOpen: (slug) => openGenera.has(slug),
+                                toggleOpen: (itm) =>
+                                    toggleOpen(itm.slug, openGenera, setOpenGenera),
+                                isOpen: (itm) => openGenera.has(itm.slug),
                                 next: [
                                     {
                                         dataKey: "birds",
                                         level: 4,
-                                        toggleOpen: (bird) => selectBird(bird),
-                                        isBird: true,
+                                        toggleOpen: (bird) => setSelectedBird(bird),
+                                        isLeaf: true,
                                     },
                                 ],
                             },
@@ -77,15 +65,15 @@ const FullList = ({ selectBird }) => {
                     {
                         dataKey: "level_2_genera",
                         level: 2,
-                        toggleOpen: (slug) =>
-                            toggleOpen(slug, openGenera, setOpenGenera),
-                        isOpen: (slug) => openGenera.has(slug),
+                        toggleOpen: (itm) =>
+                            toggleOpen(itm.slug, openGenera, setOpenGenera),
+                        isOpen: (itm) => openGenera.has(itm.slug),
                         next: [
                             {
                                 dataKey: "birds",
                                 level: 3,
-                                toggleOpen: (bird) => selectBird(bird),
-                                isBird: true,
+                                toggleOpen: (bird) => setSelectedBird(bird),
+                                isLeaf: true,
                             },
                         ],
                     },
@@ -104,36 +92,15 @@ const FullList = ({ selectBird }) => {
         toggleFn(modifiedSet);
     };
 
-    return <RecursiveItem data={data} levels={levels} />;
-};
-
-const RecursiveItem = ({ data, levels }) => {
-    const mapData = data[levels.dataKey];
-
-    if (levels.isBird) {
-        return mapData.map((itm) => (
-            <Item
-                {...itm}
-                level={levels.level}
-                key={itm.slug}
-                toggleOpen={() => levels.toggleOpen(itm)}
+    return (
+        <div>
+            <BirdDrawer
+                bird={selectedBird}
+                onClose={() => setSelectedBird({})}
             />
-        ));
-    } else {
-        return mapData.map((itm) => (
-            <Item
-                {...itm}
-                isOpen={levels.isOpen(itm.slug)}
-                level={levels.level}
-                key={itm.slug}
-                toggleOpen={() => levels.toggleOpen(itm.slug)}
-            >
-                {levels.next.map((lvl, i) => (
-                    <RecursiveItem key={i} data={itm} levels={lvl} />
-                ))}
-            </Item>
-        ));
-    }
+            <RecursiveList data={data} levels={levels} ListItem={Item} />
+        </div>
+    );
 };
 
 const Item = ({
