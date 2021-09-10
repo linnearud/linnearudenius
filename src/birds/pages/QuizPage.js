@@ -16,18 +16,7 @@ import {
     Button,
     TextInput,
 } from "../../molly-ui";
-import {
-    ORDERS,
-    GENERA,
-    ALL_BIRDS,
-    getGeneraIdsBySubfamily,
-    getGeneraIdsByFamily,
-    getBirdsByGeneraId,
-    distinct,
-    getBirdsByOrderId,
-    getBirdsByFamilyId,
-    getBirdsBySubfamilyId,
-} from "../data/helpers";
+import { distinct } from "../data/helpers";
 import BirdListing from "../components/BirdListing";
 import BirdDrawer from "../components/BirdDrawer";
 import Loader from "../components/Loader";
