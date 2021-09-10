@@ -2,7 +2,7 @@
 import { jsx, keyframes } from "@emotion/core";
 
 export const Loader = (color) => {
-    const load4 = keyframes`
+  const load4 = keyframes`
           0%,
           100% {
             box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
@@ -30,27 +30,27 @@ export const Loader = (color) => {
           }
     `;
 
-    return (
-        <div
-            css={{
-                color: color,
-                fontSize: "10px",
-                margin: "100px auto",
-                width: "1em",
-                height: "1em",
-                borderRadius: "50%",
-                position: "relative",
-                textIndent: "-9999em",
-                "-webkit-animation": `${load4} 1.3s infinite linear`,
-                animation: `${load4} 1.3s infinite linear`,
-                "-webkit-transform": "translateZ(0)",
-                "-ms-transform": "translateZ(0)",
-                transform: "translateZ(0);",
-            }}
-        >
-            Loading...
-        </div>
-    );
+  return (
+    <div
+      css={{
+        color: color,
+        fontSize: "10px",
+        margin: "100px auto",
+        width: "1em",
+        height: "1em",
+        borderRadius: "50%",
+        position: "relative",
+        textIndent: "-9999em",
+        "-webkit-animation": `${load4} 1.3s infinite linear`,
+        animation: `${load4} 1.3s infinite linear`,
+        "-webkit-transform": "translateZ(0)",
+        "-ms-transform": "translateZ(0)",
+        transform: "translateZ(0);",
+      }}
+    >
+      Loading...
+    </div>
+  );
 };
 
 export default Loader;
