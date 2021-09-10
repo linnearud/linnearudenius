@@ -62,7 +62,7 @@ export const BirdDataProvider = ({ children }) => {
                 }
             })
 
-            setData({orders: data, birds: birds})
+            setData({orders: data, birds: birds, families: families})
             setIsLoading(false)
         }
         fetchData()
