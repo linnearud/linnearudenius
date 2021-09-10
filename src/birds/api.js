@@ -3,7 +3,7 @@ const headers = {
     "Content-Type": "application/json",
 };
 
-export const backendServiceHost = "http://localhost:4000";
+export const backendServiceHost = process.env.REACT_APP_BIRD_SERVICE_HOST;
 
 async function toJSON(response) {
     const body = await response.text();
